@@ -67,13 +67,6 @@ The portal supports three user roles — Administrator, Teacher, and Student —
 - Saved to localStorage and persists after browser close
 - All elements styled for dark — cards, tables, forms, charts, sidebar
 
-### Notifications
-- Bell icon with unread count badge in topbar on every page
-- Sliding panel from right with 6 notifications
-- Unread items highlighted in blue with left border accent
-- Click any notification to mark as read
-- Mark all read button clears all highlights
-- Close on X button, outside click, or Escape key
 
 ### Profile Management — profile-manage.html
 - 4 tabs — Personal Info, Security, Preferences, Notifications
