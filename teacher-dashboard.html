@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack — Teacher Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+<script>
+// ── DARK MODE — inline for reliability ──
+(function() {
+  var saved = localStorage.getItem('edutrack_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
+
+function toggleTheme() {
+  var html    = document.documentElement;
+  var current = html.getAttribute('data-theme') || 'light';
+  var next    = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('edutrack_theme', next);
+  var btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
+}
+
+window.addEventListener('load', function() {
+  var btn = document.getElementById('themeToggle');
+  if (btn) {
+    var theme = localStorage.getItem('edutrack_theme') || 'light';
+    btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    btn.onclick = toggleTheme;
+  }
+});
+window.toggleTheme = toggleTheme;
+</script>
+</head>
+<body>
+
+
+<!-- Page Loading Overlay -->
+<div class="loading-overlay" id="pageLoader">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading…</div>
+</div>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<aside class="sidebar teacher-theme" id="sidebar">
+  <div class="sidebar-brand"><div class="brand-dot" style="background:#D97706;"></div>EduTrack</div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Teacher Menu</div>
+    <a class="nav-link" href="index.html"><span class="nav-link-icon">&#8962;</span> Home<span class="nav-tooltip">Home</span></a>
+    <a class="nav-link active" href="teacher-dashboard.html"><span class="nav-link-icon">&#9636;</span> Dashboard<span class="nav-tooltip">Dashboard</span></a>
+    <a class="nav-link" href="students.html"><span class="nav-link-icon">&#9632;</span> My Students<span class="nav-tooltip">My Students</span></a>
+    <a class="nav-link" href="teacher-dashboard.html"><span class="nav-link-icon">&#9632;</span> Assignments<span class="nav-tooltip">Assignments</span></a>
+    <a class="nav-link" href="analytics.html"><span class="nav-link-icon">&#9632;</span> Analytics<span class="nav-tooltip">Analytics</span></a>
+    <a class="nav-link" href="report.html"><span class="nav-link-icon">&#9632;</span> Reports<span class="nav-tooltip">Reports</span></a>
+    <div class="nav-label">Info</div>
+    <a class="nav-link" href="demo.html"><span class="nav-link-icon">&#9632;</span> Demo<span class="nav-tooltip">Final Demo</span></a>
+    <a class="nav-link" href="about.html"><span class="nav-link-icon">&#9632;</span> About<span class="nav-tooltip">About</span></a>
+    <a class="nav-link" href="profile-manage.html"><span class="nav-link-icon">&#9632;</span> Profile<span class="nav-tooltip">Profile</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar" style="background:#D97706;">MK</div>
+      <div><div class="user-info-name">Mr. Khalid</div><div class="user-info-role">Teacher</div></div>
+    </div>
+    <button onclick="sessionStorage.removeItem('loggedIn');window.location.href='login.html'" style="margin-top:10px;width:100%;padding:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:rgba(255,255,255,.7);font-size:12px;font-weight:600;cursor:pointer;">Sign Out</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-hdr">
+    <span class="notif-panel-title">Notifications</span>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span class="notif-mark-read" id="markAllRead">Mark all read</span>
+      <button id="closeNotif" style="background:none;border:none;cursor:pointer;color:var(--text-2);font-size:18px;">&times;</button>
+    </div>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+  <div class="notif-panel-footer"><a href="#">View all notifications</a></div>
+</div>
+
+<div class="main-wrap">
+  <div class="topbar">
+    <button class="topbar-hamburger" id="hamburger">&#9776;</button>
+    <span class="topbar-title">Teacher Dashboard</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+      <button class="notif-btn" id="notifBtn" style="position:relative;">
+        🔔<span class="notif-count" id="notifCount">3</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="main-content">
+    <div class="breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">›</span><span>Teacher Dashboard</span></div>
+    <div class="page-hdr">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div><h1>Teacher Dashboard</h1><p>Mr. Khalid · Mathematics Department · Spring 2026</p></div>
+        <span class="role-badge role-teacher" style="margin-left:auto;">&#9632; Teacher</span>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-label">My Students</div><div class="stat-val" data-count="96">0</div><div class="stat-trend trend-up">↑ Across 3 courses</div><div class="trend-bar"><div class="trend-fill green" data-w="75"></div></div></div>
+      <div class="stat-card"><div class="stat-label">Courses Teaching</div><div class="stat-val" data-count="3">0</div><div class="stat-trend">This semester</div><div class="trend-bar"><div class="trend-fill" data-w="60"></div></div></div>
+      <div class="stat-card"><div class="stat-label">Assignments Posted</div><div class="stat-val" data-count="18">0</div><div class="stat-trend trend-up">↑ 6 pending review</div><div class="trend-bar"><div class="trend-fill amber" data-w="80"></div></div></div>
+      <div class="stat-card"><div class="stat-label">Class Avg Grade</div><div class="stat-val" data-count="78">0</div><div class="stat-trend trend-up">↑ Above target</div><div class="trend-bar"><div class="trend-fill green" data-w="78"></div></div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">My Courses</div></div>
+        <div class="card-body">
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">Algebra II — Year 3</span><span class="prog-val">32 students</span></div><div class="prog-track"><div class="prog-fill" data-w="88" style="width:0%"></div></div></div>
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">Calculus I — Year 2</span><span class="prog-val">28 students</span></div><div class="prog-track"><div class="prog-fill green" data-w="74" style="width:0%"></div></div></div>
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">Statistics — Year 4</span><span class="prog-val">36 students</span></div><div class="prog-track"><div class="prog-fill amber" data-w="65" style="width:0%"></div></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Pending Reviews</div></div>
+        <div class="card-body">
+          <div class="act-list">
+            <div class="act-item"><div class="act-dot amber"></div><div><div>Ayesha Malik submitted <strong>Quadratic Equations</strong></div><div class="act-time">2 hours ago</div></div></div>
+            <div class="act-item"><div class="act-dot amber"></div><div><div>Zainab Khan submitted <strong>Integration Test</strong></div><div class="act-time">3 hours ago</div></div></div>
+            <div class="act-item"><div class="act-dot red"></div><div><div>Bilal Ahmed — <strong>Assignment overdue</strong> by 2 days</div><div class="act-time">2 days ago</div></div></div>
+            <div class="act-item"><div class="act-dot blue"></div><div><div>Omar Mirza submitted <strong>Statistics Quiz</strong></div><div class="act-time">Yesterday</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">Student Performance — My Classes</div></div>
+      <div class="card-body" style="padding:0;">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Course</th><th>Last Score</th><th>Attendance</th><th>Assignments</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><div class="td-user"><div class="td-init" style="background:#2563EB;">AM</div>Ayesha Malik</div></td><td>Algebra II</td><td style="color:var(--green);font-weight:700;">92%</td><td>96%</td><td>18/18</td><td><span class="badge badge-green">Excellent</span></td></tr>
+              <tr><td><div class="td-user"><div class="td-init" style="background:#7C3AED;">ZK</div>Zainab Khan</div></td><td>Statistics</td><td style="color:var(--green);font-weight:700;">95%</td><td>99%</td><td>20/20</td><td><span class="badge badge-green">Excellent</span></td></tr>
+              <tr><td><div class="td-user"><div class="td-init" style="background:#D97706;">BA</div>Bilal Ahmed</div></td><td>Calculus I</td><td style="color:var(--red);font-weight:700;">45%</td><td>71%</td><td>6/14</td><td><span class="badge badge-red">At-Risk</span></td></tr>
+              <tr><td><div class="td-user"><div class="td-init" style="background:#0891B2;">FS</div>Farhan Siddiqui</div></td><td>Algebra II</td><td style="color:var(--amber);font-weight:700;">68%</td><td>79%</td><td>9/14</td><td><span class="badge badge-amber">Warning</span></td></tr>
+              <tr><td><div class="td-user"><div class="td-init" style="background:#059669;">OM</div>Omar Mirza</div></td><td>Statistics</td><td style="color:var(--blue);font-weight:700;">81%</td><td>85%</td><td>12/14</td><td><span class="badge badge-blue">Good</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer><div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>EduTrack Analytics Portal</h3><p>A professional platform for tracking student performance.</p></div>
+      <div class="footer-col"><h4>Pages</h4><ul><li><a href="index.html">Home</a></li><li><a href="teacher-dashboard.html">Dashboard</a></li><li><a href="students.html">Students</a></li><li><a href="report.html">Reports</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 EduTrack Analytics Portal</span><span>Version 7.0.0</span></div>
+  </div></footer>
+</div>
+
+<nav class="bottom-nav">
+  <a class="bottom-nav-item" href="index.html"><span class="bottom-nav-icon">&#8962;</span>Home</a>
+  <a class="bottom-nav-item active" href="teacher-dashboard.html"><span class="bottom-nav-icon">&#9636;</span>Dashboard</a>
+  <a class="bottom-nav-item" href="students.html"><span class="bottom-nav-icon">&#9632;</span>Students</a>
+  <a class="bottom-nav-item" href="report.html"><span class="bottom-nav-icon">&#9632;</span>Reports</a>
+  <a class="bottom-nav-item" href="profile-manage.html"><span class="bottom-nav-icon">&#9632;</span>Profile</a>
+</nav>
+
+<div id="toast-wrap"></div>
+<script>if (!sessionStorage.getItem('loggedIn')) { window.location.href = 'login.html'; }</script>
+<script src="js/nav.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/notifications.js"></script>
+<script>
+// Hide loader — works whether DOM is ready or not
+(function hideLoader() {
+  function doHide() {
+    var loader = document.getElementById('pageLoader');
+    if (loader) {
+      loader.style.opacity = '0';
+      loader.style.transition = 'opacity .25s';
+      setTimeout(function() { loader.style.display = 'none'; }, 280);
+    }
+  }
+  // Try immediately
+  if (document.readyState === 'complete') {
+    doHide();
+  } else {
+    // Fallback — hide after max 1.5 seconds no matter what
+    window.addEventListener('load', doHide);
+    setTimeout(doHide, 1500);
+  }
+})();
+</script>
+</body>
+</html>

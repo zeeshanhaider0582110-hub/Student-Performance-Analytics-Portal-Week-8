@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack — About</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+<script>
+// ── DARK MODE — inline for reliability ──
+(function() {
+  var saved = localStorage.getItem('edutrack_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
+
+function toggleTheme() {
+  var html    = document.documentElement;
+  var current = html.getAttribute('data-theme') || 'light';
+  var next    = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('edutrack_theme', next);
+  var btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
+}
+
+window.addEventListener('load', function() {
+  var btn = document.getElementById('themeToggle');
+  if (btn) {
+    var theme = localStorage.getItem('edutrack_theme') || 'light';
+    btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    btn.onclick = toggleTheme;
+  }
+});
+window.toggleTheme = toggleTheme;
+</script>
+</head>
+<body>
+
+<!-- Page Loading Overlay -->
+<div class="loading-overlay" id="pageLoader">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading…</div>
+</div>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand"><div class="brand-dot"></div>EduTrack</div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Menu</div>
+    <a class="nav-link" href="index.html"><span class="nav-link-icon">&#8962;</span> Home<span class="nav-tooltip">Home</span></a>
+    <a class="nav-link" href="dashboard.html"><span class="nav-link-icon">&#9636;</span> Dashboard<span class="nav-tooltip">Dashboard</span></a>
+    <a class="nav-link" href="analytics.html"><span class="nav-link-icon">&#9632;</span> Analytics<span class="nav-tooltip">Analytics</span></a>
+    <a class="nav-link" href="report.html"><span class="nav-link-icon">&#9632;</span> Report<span class="nav-tooltip">Performance Report</span></a>
+    <a class="nav-link" href="students.html"><span class="nav-link-icon">&#9632;</span> Students <span class="nav-badge">10</span><span class="nav-tooltip">Student Records</span></a>
+    <div class="nav-label">Info</div>
+    <a class="nav-link" href="demo.html"><span class="nav-link-icon">&#9632;</span> Demo<span class="nav-tooltip">Final Demo</span></a>
+    <a class="nav-link active" href="about.html"><span class="nav-link-icon">&#9632;</span> About<span class="nav-tooltip">About EduTrack</span></a>
+    <a class="nav-link" href="contact.html"><span class="nav-link-icon">&#9632;</span> Contact<span class="nav-tooltip">Contact Us</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">UT</div>
+      <div><div class="user-info-name">Usman Tariq</div><div class="user-info-role">Portal Coordinator</div></div>
+    </div>
+    <button onclick="sessionStorage.removeItem('loggedIn');window.location.href='login.html'" style="margin-top:10px;width:100%;padding:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:rgba(255,255,255,.7);font-size:12px;font-weight:600;cursor:pointer;">Sign Out</button>
+  </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Notification Panel -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-hdr">
+    <span class="notif-panel-title">Notifications</span>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span class="notif-mark-read" id="markAllRead">Mark all read</span>
+      <button id="closeNotif" style="background:none;border:none;cursor:pointer;color:var(--text-2);font-size:18px;">&times;</button>
+    </div>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+  <div class="notif-panel-footer"><a href="#">View all notifications</a></div>
+</div>
+
+<div class="main-wrap">
+  <div class="topbar">
+    <button class="topbar-hamburger" id="hamburger">&#9776;</button>
+    <span class="topbar-title">About</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+      <button class="notif-btn" id="notifBtn" style="position:relative;">🔔<span class="notif-count" id="notifCount">3</span></button>
+    </div>
+  </div>
+  <div class="page-wrap" id="main-content">
+    <div class="about-hero">
+      <h1>About EduTrack Portal</h1>
+      <p>A professional analytics platform designed to help educators track student performance, identify at-risk learners early, and make data-informed academic decisions.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-icon">&#9632;</div><h3>Real-Time Analytics</h3><p>Monitor grades, attendance, and assignment completion rates across all departments.</p></div>
+      <div class="feat-card"><div class="feat-icon">&#9632;</div><h3>Early Alerts</h3><p>Automatically identify at-risk students based on GPA trends and attendance patterns.</p></div>
+      <div class="feat-card"><div class="feat-icon">&#9632;</div><h3>Smart Reports</h3><p>Generate PDF or CSV reports for students, cohorts, or entire departments in one click.</p></div>
+      <div class="feat-card"><div class="feat-icon">&#9632;</div><h3>Secure &amp; Compliant</h3><p>Role-based access ensures student data is protected and visible only to authorised personnel.</p></div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Our Mission</div></div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--text-2);line-height:1.8;margin-bottom:10px;">EduTrack was built to close the gap between raw academic data and meaningful action. Every educator deserves clear, instant insight into how their students are progressing.</p>
+          <p style="font-size:13px;color:var(--text-2);line-height:1.8;">By surfacing the right data at the right time, EduTrack helps institutions intervene earlier and build a culture of evidence-based teaching.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Platform at a Glance</div></div>
+        <div class="card-body">
+          <div class="stat-box-grid">
+            <div class="stat-box"><div class="stat-box-val" data-count="24000">0</div><div class="stat-box-label">Active Students</div></div>
+            <div class="stat-box"><div class="stat-box-val" data-count="340">0</div><div class="stat-box-label">Institutions</div></div>
+            <div class="stat-box"><div class="stat-box-val" data-count="98">0</div><div class="stat-box-label">Uptime %</div></div>
+            <div class="stat-box"><div class="stat-box-val" data-count="4.9">0</div><div class="stat-box-label">Avg. Rating</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">Our Team</div></div>
+      <div class="card-body">
+        <div class="team-grid">
+          <div class="team-card"><div class="team-avatar" style="background:#2563EB;">UT</div><div class="team-name">Usman Tariq</div><div class="team-role">Portal Coordinator</div></div>
+          <div class="team-card"><div class="team-avatar" style="background:#16A34A;">SB</div><div class="team-name">Sana Butt</div><div class="team-role">Academic Director</div></div>
+          <div class="team-card"><div class="team-avatar" style="background:#7C3AED;">FS</div><div class="team-name">Farhan Siddiqui</div><div class="team-role">Lead Developer</div></div>
+          <div class="team-card"><div class="team-avatar" style="background:#0891B2;">ZK</div><div class="team-name">Zainab Khan</div><div class="team-role">Data Analyst</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>EduTrack Analytics Portal</h3><p>A professional platform for tracking student performance.</p></div>
+      <div class="footer-col"><h4>Pages</h4><ul><li><a href="index.html">Home</a></li><li><a href="dashboard.html">Dashboard</a></li><li><a href="report.html">Report</a></li><li><a href="students.html">Students</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 EduTrack Analytics Portal</span><span>Version 7.0.0</span></div>
+  </div></footer>
+</div>
+
+<nav class="bottom-nav">
+  <a class="bottom-nav-item" href="index.html"><span class="bottom-nav-icon">&#8962;</span>Home</a>
+  <a class="bottom-nav-item" href="dashboard.html"><span class="bottom-nav-icon">&#9636;</span>Dashboard</a>
+  <a class="bottom-nav-item" href="report.html"><span class="bottom-nav-icon">&#9632;</span>Report</a>
+  <a class="bottom-nav-item" href="students.html"><span class="bottom-nav-icon">&#9632;</span>Students</a>
+  <a class="bottom-nav-item" href="contact.html"><span class="bottom-nav-icon">&#9632;</span>Contact</a>
+</nav>
+
+<div id="toast-wrap"></div>
+<script>
+  // Auth guard — redirect to login if not logged in
+  if (!sessionStorage.getItem('loggedIn')) {
+    window.location.href = 'login.html';
+  }
+</script>
+<script src="js/role.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/dashboard.js"></script>
+<script>
+// Hide loader — works whether DOM is ready or not
+(function hideLoader() {
+  function doHide() {
+    var loader = document.getElementById('pageLoader');
+    if (loader) {
+      loader.style.opacity = '0';
+      loader.style.transition = 'opacity .25s';
+      setTimeout(function() { loader.style.display = 'none'; }, 280);
+    }
+  }
+  // Try immediately
+  if (document.readyState === 'complete') {
+    doHide();
+  } else {
+    // Fallback — hide after max 1.5 seconds no matter what
+    window.addEventListener('load', doHide);
+    setTimeout(doHide, 1500);
+  }
+})();
+</script>
+</body>
+</html>

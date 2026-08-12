@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack — Profile Management</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+<script>
+// ── DARK MODE — inline for reliability ──
+(function() {
+  var saved = localStorage.getItem('edutrack_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
+
+function toggleTheme() {
+  var html    = document.documentElement;
+  var current = html.getAttribute('data-theme') || 'light';
+  var next    = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('edutrack_theme', next);
+  var btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
+}
+
+window.addEventListener('load', function() {
+  var btn = document.getElementById('themeToggle');
+  if (btn) {
+    var theme = localStorage.getItem('edutrack_theme') || 'light';
+    btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    btn.onclick = toggleTheme;
+  }
+});
+window.toggleTheme = toggleTheme;
+</script>
+</head>
+<body>
+
+
+<!-- Page Loading Overlay -->
+<div class="loading-overlay" id="pageLoader">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading…</div>
+</div>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand"><div class="brand-dot"></div>EduTrack</div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Menu</div>
+    <a class="nav-link" href="index.html"><span class="nav-link-icon">&#8962;</span> Home<span class="nav-tooltip">Home</span></a>
+    <a class="nav-link" href="dashboard.html"><span class="nav-link-icon">&#9636;</span> Dashboard<span class="nav-tooltip">Dashboard</span></a>
+    <a class="nav-link" href="analytics.html"><span class="nav-link-icon">&#9632;</span> Analytics<span class="nav-tooltip">Analytics</span></a>
+    <a class="nav-link" href="report.html"><span class="nav-link-icon">&#9632;</span> Report<span class="nav-tooltip">Report</span></a>
+    <a class="nav-link" href="students.html"><span class="nav-link-icon">&#9632;</span> Students<span class="nav-badge">10</span><span class="nav-tooltip">Students</span></a>
+    <div class="nav-label">Info</div>
+    <a class="nav-link" href="demo.html"><span class="nav-link-icon">&#9632;</span> Demo<span class="nav-tooltip">Final Demo</span></a>
+    <a class="nav-link" href="about.html"><span class="nav-link-icon">&#9632;</span> About<span class="nav-tooltip">About</span></a>
+    <a class="nav-link active" href="profile-manage.html"><span class="nav-link-icon">&#9632;</span> Profile<span class="nav-tooltip">Profile</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">UT</div>
+      <div><div class="user-info-name">Usman Tariq</div><div class="user-info-role">Coordinator</div></div>
+    </div>
+    <button onclick="sessionStorage.removeItem('loggedIn');window.location.href='login.html'" style="margin-top:10px;width:100%;padding:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:rgba(255,255,255,.7);font-size:12px;font-weight:600;cursor:pointer;">Sign Out</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-hdr">
+    <span class="notif-panel-title">Notifications</span>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span class="notif-mark-read" id="markAllRead">Mark all read</span>
+      <button id="closeNotif" style="background:none;border:none;cursor:pointer;color:var(--text-2);font-size:18px;">&times;</button>
+    </div>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+  <div class="notif-panel-footer"><a href="#">View all notifications</a></div>
+</div>
+
+<div class="main-wrap">
+  <div class="topbar">
+    <button class="topbar-hamburger" id="hamburger">&#9776;</button>
+    <span class="topbar-title">Profile Management</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+      <button class="notif-btn" id="notifBtn" style="position:relative;">
+        🔔<span class="notif-count" id="notifCount">3</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="main-content">
+    <div class="breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">›</span><span>Profile Management</span></div>
+    <div class="page-hdr"><h1>Profile Management</h1><p>Manage your personal info, security settings, and preferences</p></div>
+
+    <!-- Profile Hero -->
+    <div class="profile-hero" style="margin-bottom:20px;">
+      <div class="profile-avatar-lg" style="background:#2563EB;">UT</div>
+      <div class="profile-hero-info">
+        <h1>Usman Tariq</h1>
+        <p>usman@edutrack.edu.pk · Portal Coordinator</p>
+        <div class="profile-hero-badges">
+          <span class="badge badge-green">Active</span>
+          <span class="role-badge role-student">Coordinator</span>
+        </div>
+      </div>
+      <div class="profile-hero-actions">
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Profile photo upload coming soon.','info')">Change Photo</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="profile-tabs" role="tablist">
+      <button class="profile-tab active" data-tab="personal" role="tab" aria-selected="true">Personal Info</button>
+      <button class="profile-tab" data-tab="security" role="tab" aria-selected="false">Security</button>
+      <button class="profile-tab" data-tab="preferences" role="tab" aria-selected="false">Preferences</button>
+      <button class="profile-tab" data-tab="notifications" role="tab" aria-selected="false">Notifications</button>
+    </div>
+
+    <!-- Tab: Personal Info -->
+    <div class="tab-content active" id="tab-personal" role="tabpanel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Personal Information</div><div class="card-sub">Update your name, contact details and role info</div></div>
+        <div class="card-body">
+
+          <!-- Avatar Upload -->
+          <div class="avatar-upload">
+            <div class="profile-avatar-lg" style="background:#2563EB;width:64px;height:64px;font-size:22px;">UT</div>
+            <div class="avatar-upload-btn">
+              <button class="btn btn-secondary btn-sm" onclick="showToast('Photo upload coming soon.','info')">Upload Photo</button>
+              <span>JPG, PNG or GIF · Max 2MB</span>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="pmFName">First Name</label>
+              <input class="form-control" id="pmFName" type="text" value="Usman" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pmLName">Last Name</label>
+              <input class="form-control" id="pmLName" type="text" value="Tariq" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pmEmail">Email Address</label>
+              <input class="form-control" id="pmEmail" type="email" value="usman@edutrack.edu.pk" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pmPhone">Phone Number</label>
+              <input class="form-control" id="pmPhone" type="tel" value="+92 300 0000000" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pmRole">Role</label>
+              <select class="form-control" id="pmRole">
+                <option selected>Coordinator</option>
+                <option>Administrator</option>
+                <option>Teacher</option>
+                <option>Student</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pmDept">Department</label>
+              <input class="form-control" id="pmDept" type="text" value="Administration" />
+            </div>
+            <div class="form-group full">
+              <label class="form-label" for="pmBio">Bio</label>
+              <textarea class="form-control" id="pmBio" style="min-height:80px;">Portal Coordinator at EduTrack Analytics Portal. Managing student performance data since 2024.</textarea>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-secondary" onclick="document.getElementById('pmFName').value='Usman'">Reset</button>
+              <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Security -->
+    <div class="tab-content" id="tab-security" role="tabpanel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Change Password</div><div class="card-sub">Keep your account secure with a strong password</div></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label" for="curPass">Current Password</label>
+              <div class="password-wrap">
+                <input class="form-control" id="curPass" type="password" placeholder="Enter current password" />
+                <button type="button" class="toggle-pass" id="toggleCur">&#128065;</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="newPassPM">New Password</label>
+              <div class="password-wrap">
+                <input class="form-control" id="newPassPM" type="password" placeholder="Min. 8 characters" />
+                <button type="button" class="toggle-pass" id="toggleNew">&#128065;</button>
+              </div>
+              <div class="pwd-strength" style="margin-top:6px;">
+                <div class="pwd-bar" id="pmBar1"></div>
+                <div class="pwd-bar" id="pmBar2"></div>
+                <div class="pwd-bar" id="pmBar3"></div>
+              </div>
+              <div class="pwd-label" id="pmPwdLabel">Enter a new password</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="confirmPassPM">Confirm New Password</label>
+              <div class="password-wrap">
+                <input class="form-control" id="confirmPassPM" type="password" placeholder="Repeat password" />
+                <button type="button" class="toggle-pass" id="toggleConfirm">&#128065;</button>
+              </div>
+              <span class="form-err" id="pmConfirmErr">Passwords do not match.</span>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <div class="card-hdr"><div class="card-title">Login Sessions</div></div>
+        <div class="card-body">
+          <div class="act-list">
+            <div class="act-item"><div class="act-dot green"></div><div><div><strong>Current Session</strong> — Chrome on Windows</div><div class="act-time">Active now · Karachi, Pakistan</div></div><span class="badge badge-green" style="margin-left:auto;">Active</span></div>
+            <div class="act-item"><div class="act-dot gray"></div><div><div>Firefox on Windows</div><div class="act-time">2 days ago · Karachi, Pakistan</div></div><button class="btn btn-secondary btn-sm" onclick="showToast('Session revoked.','success')">Revoke</button></div>
+            <div class="act-item"><div class="act-dot gray"></div><div><div>Chrome on Android</div><div class="act-time">5 days ago · Lahore, Pakistan</div></div><button class="btn btn-secondary btn-sm" onclick="showToast('Session revoked.','success')">Revoke</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Preferences -->
+    <div class="tab-content" id="tab-preferences" role="tabpanel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Display Preferences</div></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:18px;">
+
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:var(--radius);flex-wrap:wrap;gap:10px;">
+              <div><div style="font-size:13px;font-weight:600;">Dark Mode</div><div style="font-size:12px;color:var(--text-2);">Switch between light and dark theme</div></div>
+              <label class="toggle-switch" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" id="darkModeToggle" style="width:36px;height:20px;cursor:pointer;" />
+                <span style="font-size:12px;color:var(--text-2);" id="darkModeLabel">Light Mode</span>
+              </label>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:var(--radius);flex-wrap:wrap;gap:10px;">
+              <div><div style="font-size:13px;font-weight:600;">Language</div><div style="font-size:12px;color:var(--text-2);">Choose your display language</div></div>
+              <select class="form-control" style="width:auto;" onchange="showToast('Language saved.','success')">
+                <option>English</option>
+                <option>Urdu</option>
+              </select>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:var(--radius);flex-wrap:wrap;gap:10px;">
+              <div><div style="font-size:13px;font-weight:600;">Compact View</div><div style="font-size:12px;color:var(--text-2);">Show more content with less spacing</div></div>
+              <input type="checkbox" style="width:36px;height:20px;cursor:pointer;" onchange="showToast('View preference saved.','success')" />
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="showToast('Preferences saved successfully.','success')">Save Preferences</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Notifications -->
+    <div class="tab-content" id="tab-notifications" role="tabpanel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Notification Settings</div><div class="card-sub">Choose what alerts you want to receive</div></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:14px;">
+
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:var(--radius);flex-wrap:wrap;gap:10px;">
+              <div><div style="font-size:13px;font-weight:600;">Grade Updates</div><div style="font-size:12px;color:var(--text-2);">Notify when new grades are published</div></div>
+              <input type="checkbox" checked style="width:36px;height:20px;cursor:pointer;" />
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:var(--radius);flex-wrap:wrap;gap:10px;">
+              <div><div style="font-size:13px;font-weight:600;">Assignment Reminders</div><div style="font-size:12px;color:var(--text-2);">Remind before assignment due dates</div></div>
+              <input type="checkbox" checked style="width:36px;height:20px;cursor:pointer;" />
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:var(--radius);flex-wrap:wrap;gap:10px;">
+              <div><div style="font-size:13px;font-weight:600;">At-Risk Alerts</div><div style="font-size:12px;color:var(--text-2);">Alert when a student is flagged at-risk</div></div>
+              <input type="checkbox" checked style="width:36px;height:20px;cursor:pointer;" />
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg);border-radius:var(--radius);flex-wrap:wrap;gap:10px;">
+              <div><div style="font-size:13px;font-weight:600;">Email Notifications</div><div style="font-size:12px;color:var(--text-2);">Receive alerts by email</div></div>
+              <input type="checkbox" style="width:36px;height:20px;cursor:pointer;" />
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="showToast('Notification settings saved.','success')">Save Settings</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer><div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>EduTrack Analytics Portal</h3><p>A professional platform for tracking student performance.</p></div>
+      <div class="footer-col"><h4>Pages</h4><ul><li><a href="index.html">Home</a></li><li><a href="dashboard.html">Dashboard</a></li><li><a href="report.html">Report</a></li><li><a href="students.html">Students</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 EduTrack Analytics Portal</span><span>Version 7.0.0</span></div>
+  </div></footer>
+</div>
+
+<nav class="bottom-nav">
+  <a class="bottom-nav-item" href="index.html"><span class="bottom-nav-icon">&#8962;</span>Home</a>
+  <a class="bottom-nav-item" href="dashboard.html"><span class="bottom-nav-icon">&#9636;</span>Dashboard</a>
+  <a class="bottom-nav-item" href="report.html"><span class="bottom-nav-icon">&#9632;</span>Report</a>
+  <a class="bottom-nav-item" href="students.html"><span class="bottom-nav-icon">&#9632;</span>Students</a>
+  <a class="bottom-nav-item active" href="profile-manage.html"><span class="bottom-nav-icon">&#9632;</span>Profile</a>
+</nav>
+
+<div id="toast-wrap"></div>
+<script>if (!sessionStorage.getItem('loggedIn')) { window.location.href = 'login.html'; }</script>
+<script src="js/role.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/notifications.js"></script>
+<script>
+'use strict';
+
+/* ── Tab switching ── */
+document.querySelectorAll('.profile-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.profile-tab').forEach(function(t) {
+      t.classList.remove('active');
+      t.setAttribute('aria-selected','false');
+    });
+    document.querySelectorAll('.tab-content').forEach(function(c) {
+      c.classList.remove('active');
+    });
+    this.classList.add('active');
+    this.setAttribute('aria-selected','true');
+    var target = document.getElementById('tab-' + this.dataset.tab);
+    if (target) target.classList.add('active');
+  });
+});
+
+/* ── Save Profile ── */
+function saveProfile() {
+  var name = document.getElementById('pmFName').value + ' ' + document.getElementById('pmLName').value;
+  localStorage.setItem('edutrack_user', JSON.stringify({
+    name:  name,
+    email: document.getElementById('pmEmail').value,
+    role:  document.getElementById('pmRole').value,
+  }));
+  showToast('Profile saved successfully.', 'success');
+}
+
+/* ── Password Strength ── */
+document.getElementById('newPassPM').addEventListener('input', function() {
+  var val   = this.value;
+  var bars  = [document.getElementById('pmBar1'), document.getElementById('pmBar2'), document.getElementById('pmBar3')];
+  var label = document.getElementById('pmPwdLabel');
+  bars.forEach(function(b) { b.className = 'pwd-bar'; });
+  if (!val) { label.textContent = 'Enter a new password'; }
+  else if (val.length < 6)  { bars[0].classList.add('weak');   label.textContent = 'Weak';   label.style.color = 'var(--red)';   }
+  else if (val.length < 10) { bars[0].classList.add('medium'); bars[1].classList.add('medium'); label.textContent = 'Medium'; label.style.color = 'var(--amber)'; }
+  else { bars.forEach(function(b) { b.classList.add('strong'); }); label.textContent = 'Strong'; label.style.color = 'var(--green)'; }
+});
+
+/* ── Change Password ── */
+function changePassword() {
+  var cur  = document.getElementById('curPass').value;
+  var np   = document.getElementById('newPassPM').value;
+  var cp   = document.getElementById('confirmPassPM').value;
+  var err  = document.getElementById('pmConfirmErr');
+  err.classList.remove('show');
+
+  if (!cur) { showToast('Enter your current password.', 'error'); return; }
+  if (np.length < 8) { showToast('New password must be at least 8 characters.', 'error'); return; }
+  if (np !== cp) { err.classList.add('show'); return; }
+
+  localStorage.setItem('edutrack_password', np);
+  showToast('Password updated successfully.', 'success');
+  document.getElementById('curPass').value = '';
+  document.getElementById('newPassPM').value = '';
+  document.getElementById('confirmPassPM').value = '';
+}
+
+/* ── Toggle password visibility ── */
+[['toggleCur','curPass'],['toggleNew','newPassPM'],['toggleConfirm','confirmPassPM']].forEach(function(pair) {
+  var btn = document.getElementById(pair[0]);
+  var inp = document.getElementById(pair[1]);
+  if (btn && inp) {
+    btn.addEventListener('click', function() {
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      this.innerHTML = inp.type === 'password' ? '&#128065;' : '&#128064;';
+    });
+  }
+});
+
+/* ── Dark mode checkbox in Preferences tab ── */
+var dmToggle = document.getElementById('darkModeToggle');
+var dmLabel  = document.getElementById('darkModeLabel');
+if (dmToggle) {
+  var currentTheme = localStorage.getItem('edutrack_theme') || 'light';
+  dmToggle.checked = currentTheme === 'dark';
+  if (dmLabel) dmLabel.textContent = currentTheme === 'dark' ? 'Dark Mode' : 'Light Mode';
+
+  dmToggle.addEventListener('change', function() {
+    var theme = this.checked ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('edutrack_theme', theme);
+    if (dmLabel) dmLabel.textContent = this.checked ? 'Dark Mode' : 'Light Mode';
+    var themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) themeBtn.textContent = this.checked ? '☀️' : '🌙';
+    showToast('Theme switched to ' + theme + ' mode.', 'success');
+  });
+}
+</script>
+<script>
+// Hide loader — works whether DOM is ready or not
+(function hideLoader() {
+  function doHide() {
+    var loader = document.getElementById('pageLoader');
+    if (loader) {
+      loader.style.opacity = '0';
+      loader.style.transition = 'opacity .25s';
+      setTimeout(function() { loader.style.display = 'none'; }, 280);
+    }
+  }
+  // Try immediately
+  if (document.readyState === 'complete') {
+    doHide();
+  } else {
+    // Fallback — hide after max 1.5 seconds no matter what
+    window.addEventListener('load', doHide);
+    setTimeout(doHide, 1500);
+  }
+})();
+</script>
+</body>
+</html>

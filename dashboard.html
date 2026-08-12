@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>EduTrack — Dashboard</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script>
+    (function(){ var t=localStorage.getItem('edutrack_theme')||'light'; document.documentElement.setAttribute('data-theme',t); })();
+    function toggleTheme(){ var h=document.documentElement,n=h.getAttribute('data-theme')==='dark'?'light':'dark'; h.setAttribute('data-theme',n); localStorage.setItem('edutrack_theme',n); var b=document.getElementById('themeToggle'); if(b) b.textContent=n==='dark'?'☀️':'🌙'; }
+    window.toggleTheme=toggleTheme;
+  </script>
+</head>
+<body>
+
+<!-- Page Loading Overlay -->
+<div class="loading-overlay" id="pageLoader">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading…</div>
+</div>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand"><div class="brand-dot"></div>EduTrack</div>
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="nav-label">Menu</div>
+    <a class="nav-link" href="index.html"><span class="nav-link-icon">&#8962;</span> Home<span class="nav-tooltip">Home</span></a>
+    <a class="nav-link active" href="dashboard.html"><span class="nav-link-icon">&#9636;</span> Dashboard<span class="nav-tooltip">Dashboard</span></a>
+    <a class="nav-link" href="analytics.html"><span class="nav-link-icon">&#9632;</span> Analytics<span class="nav-tooltip">Analytics</span></a>
+    <a class="nav-link" href="students.html"><span class="nav-link-icon">&#9632;</span> Students<span class="nav-badge">10</span><span class="nav-tooltip">Students</span></a>
+    <a class="nav-link" href="report.html"><span class="nav-link-icon">&#9632;</span> Report<span class="nav-tooltip">Report</span></a>
+    <div class="nav-label">Info</div>
+    <a class="nav-link" href="demo.html"><span class="nav-link-icon">&#9632;</span> Demo<span class="nav-tooltip">Final Demo</span></a>
+    <a class="nav-link" href="about.html"><span class="nav-link-icon">&#9632;</span> About<span class="nav-tooltip">About</span></a>
+    <a class="nav-link" href="profile-manage.html"><span class="nav-link-icon">&#9632;</span> Profile<span class="nav-tooltip">Profile</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">UT</div>
+      <div><div class="user-info-name">Usman Tariq</div><div class="user-info-role">Coordinator</div></div>
+    </div>
+    <button onclick="sessionStorage.removeItem('loggedIn');window.location.href='login.html'" style="margin-top:10px;width:100%;padding:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:rgba(255,255,255,.7);font-size:12px;font-weight:600;cursor:pointer;">Sign Out</button>
+  </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-hdr">
+    <span class="notif-panel-title">Notifications</span>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span class="notif-mark-read" id="markAllRead">Mark all read</span>
+      <button id="closeNotif" style="background:none;border:none;cursor:pointer;color:var(--text-2);font-size:18px;">&times;</button>
+    </div>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+  <div class="notif-panel-footer"><a href="#">View all notifications</a></div>
+</div>
+
+<div class="main-wrap">
+  <div class="topbar">
+    <button class="topbar-hamburger" id="hamburger">&#9776;</button>
+    <span class="topbar-title">Dashboard</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+      <button class="notif-btn" id="notifBtn" style="position:relative;">🔔<span class="notif-count" id="notifCount">3</span></button>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="main-content">
+    <div class="breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">›</span><span>Dashboard</span></div>
+    <div class="page-hdr">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div><h1>Dashboard</h1><p>Performance overview · Spring 2026</p></div>
+        <div class="export-bar">
+          <button class="btn-export csv" onclick="exportDashboardCSV()">📊 Export CSV</button>
+          <a class="btn-export" href="analytics.html" style="text-decoration:none;">📈 Full Analytics</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-label">Total Students</div><div class="stat-val" data-count="1284">0</div><div class="stat-trend trend-up">↑ 12% this semester</div><div class="trend-bar"><div class="trend-fill green" data-w="80"></div></div></div>
+      <div class="stat-card"><div class="stat-label">Average GPA</div><div class="stat-val" data-count="3.7">0</div><div class="stat-trend trend-up">↑ 0.2 from last year</div><div class="trend-bar"><div class="trend-fill" data-w="92"></div></div></div>
+      <div class="stat-card"><div class="stat-label">Attendance Rate</div><div class="stat-val" data-count="94">0</div><div class="stat-trend trend-up">↑ Excellent this term</div><div class="trend-bar"><div class="trend-fill green" data-w="94"></div></div></div>
+      <div class="stat-card"><div class="stat-label">At-Risk Students</div><div class="stat-val" data-count="37">0</div><div class="stat-trend trend-down">↓ 8 from last month</div><div class="trend-bar"><div class="trend-fill red" data-w="30"></div></div></div>
+    </div>
+
+    <!-- Charts -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="card-hdr"><div class="card-title">GPA Trend</div><div class="card-sub">Last 6 semesters</div></div>
+        <div class="chart-wrap"><canvas id="dashGpaChart" height="180"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="card-hdr"><div class="card-title">Grade Distribution</div><div class="card-sub">Current semester</div></div>
+        <div class="chart-wrap"><canvas id="dashGradeChart" height="180"></canvas></div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <!-- Subject progress -->
+      <div class="card">
+        <div class="card-hdr"><div><div class="card-title">Subject Performance</div><div class="card-sub">Average scores</div></div><a class="card-link" href="analytics.html">Full charts</a></div>
+        <div class="card-body">
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">Mathematics</span><span class="prog-val">88%</span></div><div class="prog-track"><div class="prog-fill" data-w="88" style="width:0%"></div></div></div>
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">English</span><span class="prog-val">92%</span></div><div class="prog-track"><div class="prog-fill green" data-w="92" style="width:0%"></div></div></div>
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">Chemistry</span><span class="prog-val">74%</span></div><div class="prog-track"><div class="prog-fill amber" data-w="74" style="width:0%"></div></div></div>
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">History</span><span class="prog-val">65%</span></div><div class="prog-track"><div class="prog-fill red" data-w="65" style="width:0%"></div></div></div>
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">Visual Arts</span><span class="prog-val">81%</span></div><div class="prog-track"><div class="prog-fill" data-w="81" style="width:0%"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Recent activity -->
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Recent Activity</div><div class="card-sub">Last 24 hours</div></div>
+        <div class="card-body">
+          <div class="act-list">
+            <div class="act-item"><div class="act-dot green"></div><div><div>Ayesha Malik submitted <strong>Math Assignment #7</strong></div><div class="act-time">2 minutes ago</div></div></div>
+            <div class="act-item"><div class="act-dot blue"></div><div><div>Hassan Raza enrolled in <strong>Computer Science</strong></div><div class="act-time">1 hour ago</div></div></div>
+            <div class="act-item"><div class="act-dot amber"></div><div><div><strong>Physics Mid-Term</strong> grades published — Avg: 74%</div><div class="act-time">3 hours ago</div></div></div>
+            <div class="act-item"><div class="act-dot red"></div><div><div>Bilal Ahmed flagged as <strong>at-risk</strong></div><div class="act-time">5 hours ago</div></div></div>
+            <div class="act-item"><div class="act-dot green"></div><div><div>Semester report generated for <strong>Year 2 cohort</strong></div><div class="act-time">Yesterday</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top students table -->
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">Top Performing Students</div><a class="card-link" href="students.html">View all</a></div>
+      <div class="card-body" style="padding:0;">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Department</th><th>GPA</th><th>Attendance</th><th>Assignments</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><div class="td-user"><div class="td-init" style="background:#7C3AED;">ZK</div>Zainab Khan</div></td><td>Mathematics</td><td><strong style="color:var(--green)">4.0</strong></td><td>99%</td><td>20/20</td><td><span class="badge badge-green">Active</span></td></tr>
+              <tr><td><div class="td-user"><div class="td-init" style="background:#2563EB;">AM</div>Ayesha Malik</div></td><td>Computer Science</td><td><strong style="color:var(--green)">3.9</strong></td><td>96%</td><td>18/18</td><td><span class="badge badge-green">Active</span></td></tr>
+              <tr><td><div class="td-user"><div class="td-init" style="background:#6D28D9;">MF</div>Maryam Farooq</div></td><td>Business Studies</td><td><strong style="color:var(--green)">3.8</strong></td><td>97%</td><td>19/20</td><td><span class="badge badge-green">Active</span></td></tr>
+              <tr><td><div class="td-user"><div class="td-init" style="background:#B45309;">NA</div>Nadia Akhtar</div></td><td>Humanities</td><td><strong style="color:var(--green)">3.7</strong></td><td>94%</td><td>16/17</td><td><span class="badge badge-green">Active</span></td></tr>
+              <tr><td><div class="td-user"><div class="td-init" style="background:#BE185D;">SB</div>Sana Butt</div></td><td>Arts &amp; Design</td><td><strong style="color:var(--green)">3.6</strong></td><td>92%</td><td>17/18</td><td><span class="badge badge-green">Active</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer><div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>EduTrack Analytics Portal</h3><p>A professional platform for tracking student performance.</p></div>
+      <div class="footer-col"><h4>Pages</h4><ul><li><a href="index.html">Home</a></li><li><a href="analytics.html">Analytics</a></li><li><a href="report.html">Report</a></li><li><a href="students.html">Students</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 EduTrack Analytics Portal</span><span>Version 7.0.0</span></div>
+  </div></footer>
+</div>
+
+<nav class="bottom-nav">
+  <a class="bottom-nav-item" href="index.html"><span class="bottom-nav-icon">&#8962;</span>Home</a>
+  <a class="bottom-nav-item active" href="dashboard.html"><span class="bottom-nav-icon">&#9636;</span>Dashboard</a>
+  <a class="bottom-nav-item" href="analytics.html"><span class="bottom-nav-icon">&#9632;</span>Analytics</a>
+  <a class="bottom-nav-item" href="students.html"><span class="bottom-nav-icon">&#9632;</span>Students</a>
+  <a class="bottom-nav-item" href="report.html"><span class="bottom-nav-icon">&#9632;</span>Report</a>
+</nav>
+
+<div id="toast-wrap"></div>
+<script>if(!sessionStorage.getItem('loggedIn')){window.location.href='login.html';}</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/role.js"></script>
+<script>
+'use strict';
+
+// Initialize charts safely after everything loads
+function initDashboard() {
+  var btn = document.getElementById('themeToggle');
+  if (btn) {
+    btn.textContent = (localStorage.getItem('edutrack_theme')||'light')==='dark'?'☀️':'🌙';
+    btn.onclick = toggleTheme;
+  }
+  // Wait for Chart.js to be available
+  if (typeof Chart !== 'undefined') {
+    buildDashCharts();
+  } else {
+    // Retry after 300ms if Chart.js not loaded yet
+    setTimeout(function() {
+      if (typeof Chart !== 'undefined') buildDashCharts();
+    }, 300);
+  }
+}
+
+if (document.readyState === 'complete') {
+  initDashboard();
+} else {
+  window.addEventListener('load', initDashboard);
+}
+
+function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
+function gc() { return isDark() ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)'; }
+function tc() { return isDark() ? '#94A3B8' : '#6B7280'; }
+
+function buildDashCharts() {
+  // GPA line
+  var gpaCtx = document.getElementById('dashGpaChart');
+  if (gpaCtx) {
+    if (window._dashGpa) window._dashGpa.destroy();
+    window._dashGpa = new Chart(gpaCtx, {
+      type: 'line',
+      data: {
+        labels: ['Fall 23','Spr 24','Fall 24','Spr 25','Fall 25','Spr 26'],
+        datasets: [{ label:'Avg GPA', data:[2.8,3.0,3.1,3.2,3.4,3.7], borderColor:'#2563EB', backgroundColor:'rgba(37,99,235,.1)', tension:0.4, fill:true, pointBackgroundColor:'#2563EB', pointRadius:4 }]
+      },
+      options: { responsive:true, plugins:{ legend:{display:false} }, scales:{ x:{grid:{color:gc()},ticks:{color:tc(),font:{size:11}}}, y:{min:2.0,max:4.0,grid:{color:gc()},ticks:{color:tc(),font:{size:11}}} } }
+    });
+  }
+
+  // Grade doughnut
+  var grCtx = document.getElementById('dashGradeChart');
+  if (grCtx) {
+    if (window._dashGrade) window._dashGrade.destroy();
+    window._dashGrade = new Chart(grCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['A','B','C','D','F'],
+        datasets: [{ data:[42,31,18,7,2], backgroundColor:['#16A34A','#2563EB','#D97706','#DC2626','#9CA3AF'], borderWidth:2, borderColor: isDark()?'#1E2330':'#fff' }]
+      },
+      options: { responsive:true, cutout:'65%', plugins:{ legend:{position:'right', labels:{color:tc(),font:{size:11},padding:10}} } }
+    });
+  }
+}
+
+function exportDashboardCSV() {
+  var csv = 'Metric,Value\nTotal Students,1284\nAverage GPA,3.7\nAttendance Rate,94%\nAt-Risk Students,37\nPass Rate,91%\n';
+  var blob = new Blob([csv],{type:'text/csv'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href=url; a.download='EduTrack_Dashboard.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Dashboard data exported.','success');
+}
+window.exportDashboardCSV = exportDashboardCSV;
+</script>
+<script>
+// Hide loader — works whether DOM is ready or not
+(function hideLoader() {
+  function doHide() {
+    var loader = document.getElementById('pageLoader');
+    if (loader) {
+      loader.style.opacity = '0';
+      loader.style.transition = 'opacity .25s';
+      setTimeout(function() { loader.style.display = 'none'; }, 280);
+    }
+  }
+  // Try immediately
+  if (document.readyState === 'complete') {
+    doHide();
+  } else {
+    // Fallback — hide after max 1.5 seconds no matter what
+    window.addEventListener('load', doHide);
+    setTimeout(doHide, 1500);
+  }
+})();
+</script>
+</body>
+</html>

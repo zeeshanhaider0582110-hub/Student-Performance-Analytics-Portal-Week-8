@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack — Student Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+<script>
+// ── DARK MODE — inline for reliability ──
+(function() {
+  var saved = localStorage.getItem('edutrack_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
+
+function toggleTheme() {
+  var html    = document.documentElement;
+  var current = html.getAttribute('data-theme') || 'light';
+  var next    = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('edutrack_theme', next);
+  var btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
+}
+
+window.addEventListener('load', function() {
+  var btn = document.getElementById('themeToggle');
+  if (btn) {
+    var theme = localStorage.getItem('edutrack_theme') || 'light';
+    btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    btn.onclick = toggleTheme;
+  }
+});
+window.toggleTheme = toggleTheme;
+</script>
+</head>
+<body>
+
+
+<!-- Page Loading Overlay -->
+<div class="loading-overlay" id="pageLoader">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading…</div>
+</div>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<aside class="sidebar student-theme" id="sidebar">
+  <div class="sidebar-brand"><div class="brand-dot" style="background:#2563EB;"></div>EduTrack</div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Student Menu</div>
+    <a class="nav-link" href="index.html"><span class="nav-link-icon">&#8962;</span> Home<span class="nav-tooltip">Home</span></a>
+    <a class="nav-link active" href="student-dashboard.html"><span class="nav-link-icon">&#9636;</span> Dashboard<span class="nav-tooltip">Dashboard</span></a>
+    <a class="nav-link" href="profile.html"><span class="nav-link-icon">&#9632;</span> My Profile<span class="nav-tooltip">My Profile</span></a>
+    <a class="nav-link" href="analytics.html"><span class="nav-link-icon">&#9632;</span> Analytics<span class="nav-tooltip">Analytics</span></a>
+    <a class="nav-link" href="report.html"><span class="nav-link-icon">&#9632;</span> My Report<span class="nav-tooltip">My Report</span></a>
+    <a class="nav-link" href="contact.html"><span class="nav-link-icon">&#9632;</span> Contact<span class="nav-tooltip">Contact</span></a>
+    <div class="nav-label">Info</div>
+    <a class="nav-link" href="demo.html"><span class="nav-link-icon">&#9632;</span> Demo<span class="nav-tooltip">Final Demo</span></a>
+    <a class="nav-link" href="about.html"><span class="nav-link-icon">&#9632;</span> About<span class="nav-tooltip">About</span></a>
+    <a class="nav-link" href="profile-manage.html"><span class="nav-link-icon">&#9632;</span> Settings<span class="nav-tooltip">Settings</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar" style="background:#2563EB;">AM</div>
+      <div><div class="user-info-name">Ayesha Malik</div><div class="user-info-role">Student</div></div>
+    </div>
+    <button onclick="sessionStorage.removeItem('loggedIn');window.location.href='login.html'" style="margin-top:10px;width:100%;padding:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:rgba(255,255,255,.7);font-size:12px;font-weight:600;cursor:pointer;">Sign Out</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-hdr">
+    <span class="notif-panel-title">Notifications</span>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span class="notif-mark-read" id="markAllRead">Mark all read</span>
+      <button id="closeNotif" style="background:none;border:none;cursor:pointer;color:var(--text-2);font-size:18px;">&times;</button>
+    </div>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+  <div class="notif-panel-footer"><a href="#">View all notifications</a></div>
+</div>
+
+<div class="main-wrap">
+  <div class="topbar">
+    <button class="topbar-hamburger" id="hamburger">&#9776;</button>
+    <span class="topbar-title">Student Dashboard</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+      <button class="notif-btn" id="notifBtn" style="position:relative;">
+        🔔<span class="notif-count" id="notifCount">3</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="main-content">
+    <div class="breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">›</span><span>Student Dashboard</span></div>
+    <div class="page-hdr">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div><h1>Student Dashboard</h1><p>Ayesha Malik · Computer Science · Year 3 · Spring 2026</p></div>
+        <span class="role-badge role-student" style="margin-left:auto;">&#9632; Student</span>
+      </div>
+    </div>
+
+    <!-- Student Stats -->
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-label">My GPA</div><div class="stat-val" data-count="3.9">0</div><div class="stat-trend trend-up">↑ Top of class</div><div class="trend-bar"><div class="trend-fill green" data-w="97"></div></div></div>
+      <div class="stat-card"><div class="stat-label">Attendance</div><div class="stat-val" data-count="96">0</div><div class="stat-trend trend-up">↑ Excellent</div><div class="trend-bar"><div class="trend-fill green" data-w="96"></div></div></div>
+      <div class="stat-card"><div class="stat-label">Assignments Done</div><div class="stat-val" data-count="18">0</div><div class="stat-trend trend-up">↑ 18 of 18 complete</div><div class="trend-bar"><div class="trend-fill" data-w="100"></div></div></div>
+      <div class="stat-card"><div class="stat-label">Class Rank</div><div class="stat-val">#12</div><div class="stat-trend trend-up">↑ Top 10% of batch</div><div class="trend-bar"><div class="trend-fill green" data-w="90"></div></div></div>
+    </div>
+
+    <div class="two-col">
+      <!-- Subject Progress -->
+      <div class="card">
+        <div class="card-hdr"><div><div class="card-title">Subject Progress</div><div class="card-sub">Current semester scores</div></div></div>
+        <div class="card-body">
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">Mathematics</span><span class="prog-val">92% — A+</span></div><div class="prog-track"><div class="prog-fill" data-w="92" style="width:0%"></div></div></div>
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">Data Structures</span><span class="prog-val">88% — A</span></div><div class="prog-track"><div class="prog-fill green" data-w="88" style="width:0%"></div></div></div>
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">English</span><span class="prog-val">95% — A+</span></div><div class="prog-track"><div class="prog-fill green" data-w="95" style="width:0%"></div></div></div>
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">Physics</span><span class="prog-val">78% — B+</span></div><div class="prog-track"><div class="prog-fill amber" data-w="78" style="width:0%"></div></div></div>
+          <div class="prog-item"><div class="prog-meta"><span class="prog-name">Operating Systems</span><span class="prog-val">85% — A</span></div><div class="prog-track"><div class="prog-fill" data-w="85" style="width:0%"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Today's Schedule -->
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Today's Schedule</div></div>
+        <div class="card-body">
+          <div class="act-list">
+            <div class="act-item"><div class="act-dot blue"></div><div><div><strong>08:00 – 09:30</strong> &nbsp; Mathematics — Room 204</div><div class="act-time">Mr. Khalid · Algebra II</div></div></div>
+            <div class="act-item"><div class="act-dot green"></div><div><div><strong>10:00 – 11:30</strong> &nbsp; Science — Lab B</div><div class="act-time">Ms. Nadia · Chemistry</div></div></div>
+            <div class="act-item"><div class="act-dot amber"></div><div><div><strong>13:00 – 14:30</strong> &nbsp; English — Room 110</div><div class="act-time">Mrs. Sadia · Literature</div></div></div>
+            <div class="act-item"><div class="act-dot red"></div><div><div><strong>15:00 – 16:00</strong> &nbsp; OS Lab — Room 308</div><div class="act-time">Mr. Imran · Lab Session</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Assignments -->
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">My Assignments</div><a class="card-link" href="report.html">View report</a></div>
+      <div class="card-body" style="padding:0;">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Assignment</th><th>Subject</th><th>Due Date</th><th>Score</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Quadratic Equations</td><td>Mathematics</td><td>Jun 23</td><td>—</td><td><span class="badge badge-red">Pending</span></td></tr>
+              <tr><td>Lab Report #5</td><td>Science</td><td>Jun 24</td><td>—</td><td><span class="badge badge-amber">Draft</span></td></tr>
+              <tr><td>Essay: Gatsby Themes</td><td>English</td><td>Jun 25</td><td style="color:var(--green);font-weight:700;">95%</td><td><span class="badge badge-green">Submitted</span></td></tr>
+              <tr><td>OS Process Scheduling</td><td>Operating Systems</td><td>Jun 26</td><td style="color:var(--blue);font-weight:700;">88%</td><td><span class="badge badge-green">Graded</span></td></tr>
+              <tr><td>Physics Numericals</td><td>Physics</td><td>Jun 28</td><td>—</td><td><span class="badge badge-gray">Not started</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer><div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>EduTrack Analytics Portal</h3><p>A professional platform for tracking student performance.</p></div>
+      <div class="footer-col"><h4>Pages</h4><ul><li><a href="index.html">Home</a></li><li><a href="student-dashboard.html">Dashboard</a></li><li><a href="profile.html">My Profile</a></li><li><a href="report.html">My Report</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 EduTrack Analytics Portal</span><span>Version 7.0.0</span></div>
+  </div></footer>
+</div>
+
+<nav class="bottom-nav">
+  <a class="bottom-nav-item" href="index.html"><span class="bottom-nav-icon">&#8962;</span>Home</a>
+  <a class="bottom-nav-item active" href="student-dashboard.html"><span class="bottom-nav-icon">&#9636;</span>Dashboard</a>
+  <a class="bottom-nav-item" href="profile.html"><span class="bottom-nav-icon">&#9632;</span>Profile</a>
+  <a class="bottom-nav-item" href="report.html"><span class="bottom-nav-icon">&#9632;</span>Report</a>
+  <a class="bottom-nav-item" href="contact.html"><span class="bottom-nav-icon">&#9632;</span>Contact</a>
+</nav>
+
+<div id="toast-wrap"></div>
+<script>if (!sessionStorage.getItem('loggedIn')) { window.location.href = 'login.html'; }</script>
+<script src="js/nav.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/notifications.js"></script>
+<script>
+// Hide loader — works whether DOM is ready or not
+(function hideLoader() {
+  function doHide() {
+    var loader = document.getElementById('pageLoader');
+    if (loader) {
+      loader.style.opacity = '0';
+      loader.style.transition = 'opacity .25s';
+      setTimeout(function() { loader.style.display = 'none'; }, 280);
+    }
+  }
+  // Try immediately
+  if (document.readyState === 'complete') {
+    doHide();
+  } else {
+    // Fallback — hide after max 1.5 seconds no matter what
+    window.addEventListener('load', doHide);
+    setTimeout(doHide, 1500);
+  }
+})();
+</script>
+</body>
+</html>

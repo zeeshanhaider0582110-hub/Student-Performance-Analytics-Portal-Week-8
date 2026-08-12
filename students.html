@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack — Student Records</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script>
+    (function() {
+      var t = localStorage.getItem('edutrack_theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+    function toggleTheme() {
+      var html = document.documentElement;
+      var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('edutrack_theme', next);
+      var btn = document.getElementById('themeToggle');
+      if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
+    }
+    window.toggleTheme = toggleTheme;
+  </script>
+</head>
+<body>
+
+<!-- Page Loading Overlay -->
+<div class="loading-overlay" id="pageLoader">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading…</div>
+</div>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand"><div class="brand-dot"></div>EduTrack</div>
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="nav-label">Menu</div>
+    <a class="nav-link" href="index.html"><span class="nav-link-icon">&#8962;</span> Home<span class="nav-tooltip">Home</span></a>
+    <a class="nav-link" href="dashboard.html"><span class="nav-link-icon">&#9636;</span> Dashboard<span class="nav-tooltip">Dashboard</span></a>
+    <a class="nav-link" href="analytics.html"><span class="nav-link-icon">&#9632;</span> Analytics<span class="nav-tooltip">Analytics</span></a>
+    <a class="nav-link active" href="students.html"><span class="nav-link-icon">&#9632;</span> Students<span class="nav-badge" id="sidebarBadge">10</span><span class="nav-tooltip">Students</span></a>
+    <a class="nav-link" href="report.html"><span class="nav-link-icon">&#9632;</span> Report<span class="nav-tooltip">Report</span></a>
+    <div class="nav-label">Info</div>
+    <a class="nav-link" href="demo.html"><span class="nav-link-icon">&#9632;</span> Demo<span class="nav-tooltip">Final Demo</span></a>
+    <a class="nav-link" href="about.html"><span class="nav-link-icon">&#9632;</span> About<span class="nav-tooltip">About</span></a>
+    <a class="nav-link" href="profile-manage.html"><span class="nav-link-icon">&#9632;</span> Profile<span class="nav-tooltip">Profile</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">UT</div>
+      <div><div class="user-info-name">Usman Tariq</div><div class="user-info-role">Coordinator</div></div>
+    </div>
+    <button onclick="sessionStorage.removeItem('loggedIn');window.location.href='login.html'" style="margin-top:10px;width:100%;padding:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:rgba(255,255,255,.7);font-size:12px;font-weight:600;cursor:pointer;">Sign Out</button>
+  </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-hdr">
+    <span class="notif-panel-title">Notifications</span>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span class="notif-mark-read" id="markAllRead">Mark all read</span>
+      <button id="closeNotif" style="background:none;border:none;cursor:pointer;color:var(--text-2);font-size:18px;">&times;</button>
+    </div>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+  <div class="notif-panel-footer"><a href="#">View all notifications</a></div>
+</div>
+
+<div class="main-wrap">
+  <div class="topbar">
+    <button class="topbar-hamburger" id="hamburger">&#9776;</button>
+    <span class="topbar-title">Student Records</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+      <button class="notif-btn" id="notifBtn" style="position:relative;">🔔<span class="notif-count" id="notifCount">3</span></button>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="main-content">
+    <div class="breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">›</span><span>Student Records</span></div>
+    <div class="page-hdr">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div><h1>Student Records</h1><p>Manage student data and enrollment · Spring 2026</p></div>
+        <div class="export-bar">
+          <button class="btn-export pdf" onclick="exportPDF()">📄 PDF</button>
+          <button class="btn-export csv" onclick="exportCSV()">📊 CSV</button>
+          <button class="btn-export print" onclick="window.print()">🖨️ Print</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-label">Total Enrolled</div><div class="stat-val" data-count="1284">0</div><div class="stat-trend trend-up">↑ 12% this semester</div></div>
+      <div class="stat-card"><div class="stat-label">Active Students</div><div class="stat-val" data-count="1201">0</div><div class="stat-trend trend-up">↑ 93.5% active rate</div></div>
+      <div class="stat-card"><div class="stat-label">At-Risk</div><div class="stat-val" data-count="37">0</div><div class="stat-trend trend-down">↓ 8 from last month</div></div>
+      <div class="stat-card"><div class="stat-label">New This Term</div><div class="stat-val" data-count="142">0</div><div class="stat-trend trend-up">↑ New admissions</div></div>
+    </div>
+
+    <!-- Advanced Filter System -->
+    <div class="filter-system">
+      <div class="filter-system-hdr">
+        <span class="filter-system-title">🔍 Search &amp; Filter</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span id="filterCount" style="font-size:11px;color:var(--text-3);">Showing all 10 students</span>
+          <button class="btn btn-secondary btn-sm" id="toggleFilter">Advanced Filters ▾</button>
+          <button class="btn btn-secondary btn-sm" id="resetAllFilters">Reset All</button>
+        </div>
+      </div>
+
+      <!-- Quick Search + Chips -->
+      <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
+        <div class="search-filter-bar" style="border:none;padding:0;background:none;">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="search" id="searchInput" placeholder="Search by name, ID, department, status…" aria-label="Search students" />
+          </div>
+          <div class="filter-chips">
+            <button class="chip active" data-filter="all">All</button>
+            <button class="chip green" data-filter="active">Active</button>
+            <button class="chip" data-filter="new">New</button>
+            <button class="chip amber" data-filter="warning">Warning</button>
+            <button class="chip red" data-filter="at-risk">At-Risk</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced Filters Panel -->
+      <div class="adv-search-panel" id="advSearchPanel">
+        <div class="filter-row">
+          <div class="form-group">
+            <label class="form-label">Department</label>
+            <select class="form-control" id="advDept">
+              <option value="">All Departments</option>
+              <option>Computer Science</option>
+              <option>Mathematics</option>
+              <option>Natural Sciences</option>
+              <option>Humanities</option>
+              <option>Business Studies</option>
+              <option>Arts &amp; Design</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Academic Year</label>
+            <select class="form-control" id="advYear">
+              <option value="">All Years</option>
+              <option value="year 1">Year 1</option>
+              <option value="year 2">Year 2</option>
+              <option value="year 3">Year 3</option>
+              <option value="year 4">Year 4</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">GPA Minimum</label>
+            <input class="form-control" id="advGpaMin" type="number" min="0" max="4" step="0.1" placeholder="e.g. 2.5" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">GPA Maximum</label>
+            <input class="form-control" id="advGpaMax" type="number" min="0" max="4" step="0.1" placeholder="e.g. 4.0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Attendance Min %</label>
+            <input class="form-control" id="advAttend" type="number" min="0" max="100" placeholder="e.g. 75" />
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button class="btn btn-primary btn-sm" id="advSearchApply">Apply Filters</button>
+          <button class="btn btn-secondary btn-sm" id="advSearchReset">Clear Filters</button>
+        </div>
+        <!-- Active filter tags -->
+        <div class="active-filters" id="activeTags"></div>
+      </div>
+    </div>
+
+    <!-- Registration Form -->
+    <div class="card">
+      <div class="card-hdr">
+        <div><div class="card-title">Register New Student</div><div class="card-sub">All fields marked * are required</div></div>
+        <button class="btn btn-secondary btn-sm" id="toggleRegForm">Hide Form ▲</button>
+      </div>
+      <div id="regFormWrap" class="card-body">
+        <form id="regForm" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="fName">First Name *</label>
+              <div class="input-wrap">
+                <input class="form-control" id="fName" type="text" placeholder="First name" autocomplete="given-name" />
+                <span class="input-icon-right" id="fNameIcon"></span>
+              </div>
+              <span class="form-err-msg" id="fNameErr">First name is required.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="lName">Last Name *</label>
+              <div class="input-wrap">
+                <input class="form-control" id="lName" type="text" placeholder="Last name" autocomplete="family-name" />
+                <span class="input-icon-right" id="lNameIcon"></span>
+              </div>
+              <span class="form-err-msg" id="lNameErr">Last name is required.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">Email Address *</label>
+              <div class="input-wrap">
+                <input class="form-control" id="email" type="email" placeholder="student@school.edu.pk" autocomplete="email" />
+                <span class="input-icon-right" id="emailIcon"></span>
+              </div>
+              <span class="form-err-msg" id="emailErr">Enter a valid email address.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="stuId">Student ID *</label>
+              <div class="input-wrap">
+                <input class="form-control" id="stuId" type="text" placeholder="STU-2026-XXXX" />
+                <span class="input-icon-right" id="stuIdIcon"></span>
+              </div>
+              <span class="form-err-msg" id="stuIdErr">Student ID is required (format: STU-2026-XXXX).</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="dept">Department *</label>
+              <select class="form-control" id="dept">
+                <option value="">— Select Department —</option>
+                <option>Computer Science</option><option>Mathematics</option>
+                <option>Natural Sciences</option><option>Humanities</option>
+                <option>Business Studies</option><option>Arts &amp; Design</option>
+              </select>
+              <span class="form-err-msg" id="deptErr">Please select a department.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="year">Academic Year *</label>
+              <select class="form-control" id="year">
+                <option value="">— Select Year —</option>
+                <option>Year 1</option><option>Year 2</option>
+                <option>Year 3</option><option>Year 4</option>
+              </select>
+              <span class="form-err-msg" id="yearErr">Academic year is required.</span>
+            </div>
+            <div class="form-group"><label class="form-label" for="dob">Date of Birth</label><input class="form-control" id="dob" type="date" /></div>
+            <div class="form-group">
+              <label class="form-label" for="gender">Gender</label>
+              <select class="form-control" id="gender"><option value="">— Select —</option><option>Male</option><option>Female</option><option>Prefer not to say</option></select>
+            </div>
+            <div class="form-group"><label class="form-label" for="phone">Phone Number</label><input class="form-control" id="phone" type="tel" placeholder="+92 300 0000000" /></div>
+            <div class="form-group"><label class="form-label" for="cnic">CNIC / B-Form</label><input class="form-control" id="cnic" type="text" placeholder="00000-0000000-0" /></div>
+            <div class="form-group full"><label class="form-label" for="address">Home Address</label><input class="form-control" id="address" type="text" placeholder="Street, Area, City" /></div>
+            <div class="form-group full"><label class="form-label" for="notes">Notes</label><textarea class="form-control" id="notes" placeholder="Any special notes about this student…" style="min-height:70px;"></textarea></div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" onclick="resetRegForm()">Clear Form</button>
+              <button type="submit" class="btn btn-primary">Register Student</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="card">
+      <div class="card-hdr">
+        <div><div class="card-title">All Student Records</div><div class="card-sub" id="tableSubtitle">Showing 10 students</div></div>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div class="tbl-wrap">
+          <table id="stuTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th class="sortable" data-col="1">Student Name</th>
+                <th class="sortable" data-col="2">Student ID</th>
+                <th class="sortable" data-col="3">Department</th>
+                <th class="sortable" data-col="4">Year</th>
+                <th class="sortable" data-col="5">GPA</th>
+                <th class="sortable" data-col="6">Attendance</th>
+                <th>Assignments</th>
+                <th>Contact</th>
+                <th class="sortable" data-col="9">Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="stuTbody">
+              <tr data-status="active"><td style="color:var(--text-3);font-size:12px;">01</td><td><div class="td-user"><div class="td-init" style="background:#2563EB;">AM</div><div><div style="font-weight:600;">Ayesha Malik</div><div style="font-size:11px;color:var(--text-3);">ayesha@edu.pk</div></div></div></td><td style="font-family:monospace;font-size:12px;">STU-2026-0001</td><td>Computer Science</td><td>Year 3</td><td><strong style="color:var(--green)">3.9</strong></td><td><span style="color:var(--green);font-weight:600;">96%</span></td><td><span style="color:var(--green);font-weight:600;">18/18</span></td><td style="font-size:12px;color:var(--text-2);">+92 300 1234567</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm btn-view" data-id="STU-2026-0001" data-name="Ayesha Malik">View</button><button class="btn btn-primary btn-sm btn-edit" data-name="Ayesha Malik">Edit</button></div></td></tr>
+              <tr data-status="new"><td style="color:var(--text-3);font-size:12px;">02</td><td><div class="td-user"><div class="td-init" style="background:#16A34A;">HR</div><div><div style="font-weight:600;">Hassan Raza</div><div style="font-size:11px;color:var(--text-3);">hassan@edu.pk</div></div></div></td><td style="font-family:monospace;font-size:12px;">STU-2026-0042</td><td>Natural Sciences</td><td>Year 1</td><td><strong style="color:var(--blue)">3.2</strong></td><td><span style="color:var(--blue);font-weight:600;">88%</span></td><td><span style="color:var(--blue);font-weight:600;">10/12</span></td><td style="font-size:12px;color:var(--text-2);">+92 321 2345678</td><td><span class="badge badge-blue">New</span></td><td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm btn-view" data-id="STU-2026-0042" data-name="Hassan Raza">View</button><button class="btn btn-primary btn-sm btn-edit" data-name="Hassan Raza">Edit</button></div></td></tr>
+              <tr data-status="at-risk"><td style="color:var(--text-3);font-size:12px;">03</td><td><div class="td-user"><div class="td-init" style="background:#D97706;">BA</div><div><div style="font-weight:600;">Bilal Ahmed</div><div style="font-size:11px;color:var(--text-3);">bilal@edu.pk</div></div></div></td><td style="font-family:monospace;font-size:12px;">STU-2026-0187</td><td>Humanities</td><td>Year 2</td><td><strong style="color:var(--red)">1.9</strong></td><td><span style="color:var(--red);font-weight:600;">71%</span></td><td><span style="color:var(--red);font-weight:600;">6/14</span></td><td style="font-size:12px;color:var(--text-2);">+92 333 3456789</td><td><span class="badge badge-red">At-Risk</span></td><td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm btn-view" data-id="STU-2026-0187" data-name="Bilal Ahmed">View</button><button class="btn btn-primary btn-sm btn-edit" data-name="Bilal Ahmed">Edit</button></div></td></tr>
+              <tr data-status="active"><td style="color:var(--text-3);font-size:12px;">04</td><td><div class="td-user"><div class="td-init" style="background:#7C3AED;">ZK</div><div><div style="font-weight:600;">Zainab Khan</div><div style="font-size:11px;color:var(--text-3);">zainab@edu.pk</div></div></div></td><td style="font-family:monospace;font-size:12px;">STU-2026-0093</td><td>Mathematics</td><td>Year 4</td><td><strong style="color:var(--green)">4.0</strong></td><td><span style="color:var(--green);font-weight:600;">99%</span></td><td><span style="color:var(--green);font-weight:600;">20/20</span></td><td style="font-size:12px;color:var(--text-2);">+92 311 4567890</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm btn-view" data-id="STU-2026-0093" data-name="Zainab Khan">View</button><button class="btn btn-primary btn-sm btn-edit" data-name="Zainab Khan">Edit</button></div></td></tr>
+              <tr data-status="warning"><td style="color:var(--text-3);font-size:12px;">05</td><td><div class="td-user"><div class="td-init" style="background:#0891B2;">FS</div><div><div style="font-weight:600;">Farhan Siddiqui</div><div style="font-size:11px;color:var(--text-3);">farhan@edu.pk</div></div></div></td><td style="font-family:monospace;font-size:12px;">STU-2026-0256</td><td>Business Studies</td><td>Year 2</td><td><strong style="color:var(--amber)">2.7</strong></td><td><span style="color:var(--amber);font-weight:600;">79%</span></td><td><span style="color:var(--amber);font-weight:600;">9/14</span></td><td style="font-size:12px;color:var(--text-2);">+92 345 5678901</td><td><span class="badge badge-amber">Warning</span></td><td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm btn-view" data-id="STU-2026-0256" data-name="Farhan Siddiqui">View</button><button class="btn btn-primary btn-sm btn-edit" data-name="Farhan Siddiqui">Edit</button></div></td></tr>
+              <tr data-status="active"><td style="color:var(--text-3);font-size:12px;">06</td><td><div class="td-user"><div class="td-init" style="background:#BE185D;">SB</div><div><div style="font-weight:600;">Sana Butt</div><div style="font-size:11px;color:var(--text-3);">sana@edu.pk</div></div></div></td><td style="font-family:monospace;font-size:12px;">STU-2026-0041</td><td>Arts &amp; Design</td><td>Year 4</td><td><strong style="color:var(--green)">3.6</strong></td><td><span style="color:var(--green);font-weight:600;">92%</span></td><td><span style="color:var(--green);font-weight:600;">17/18</span></td><td style="font-size:12px;color:var(--text-2);">+92 300 6789012</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm btn-view" data-id="STU-2026-0041" data-name="Sana Butt">View</button><button class="btn btn-primary btn-sm btn-edit" data-name="Sana Butt">Edit</button></div></td></tr>
+              <tr data-status="new"><td style="color:var(--text-3);font-size:12px;">07</td><td><div class="td-user"><div class="td-init" style="background:#059669;">OM</div><div><div style="font-weight:600;">Omar Mirza</div><div style="font-size:11px;color:var(--text-3);">omar@edu.pk</div></div></div></td><td style="font-family:monospace;font-size:12px;">STU-2026-0310</td><td>Computer Science</td><td>Year 2</td><td><strong style="color:var(--blue)">3.4</strong></td><td><span style="color:var(--blue);font-weight:600;">85%</span></td><td><span style="color:var(--blue);font-weight:600;">12/14</span></td><td style="font-size:12px;color:var(--text-2);">+92 321 7890123</td><td><span class="badge badge-blue">New</span></td><td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm btn-view" data-id="STU-2026-0310" data-name="Omar Mirza">View</button><button class="btn btn-primary btn-sm btn-edit" data-name="Omar Mirza">Edit</button></div></td></tr>
+              <tr data-status="active"><td style="color:var(--text-3);font-size:12px;">08</td><td><div class="td-user"><div class="td-init" style="background:#B45309;">NA</div><div><div style="font-weight:600;">Nadia Akhtar</div><div style="font-size:11px;color:var(--text-3);">nadia@edu.pk</div></div></div></td><td style="font-family:monospace;font-size:12px;">STU-2026-0198</td><td>Humanities</td><td>Year 3</td><td><strong style="color:var(--green)">3.7</strong></td><td><span style="color:var(--green);font-weight:600;">94%</span></td><td><span style="color:var(--green);font-weight:600;">16/17</span></td><td style="font-size:12px;color:var(--text-2);">+92 333 8901234</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm btn-view" data-id="STU-2026-0198" data-name="Nadia Akhtar">View</button><button class="btn btn-primary btn-sm btn-edit" data-name="Nadia Akhtar">Edit</button></div></td></tr>
+              <tr data-status="warning"><td style="color:var(--text-3);font-size:12px;">09</td><td><div class="td-user"><div class="td-init" style="background:#DC2626;">RI</div><div><div style="font-weight:600;">Rafay Iqbal</div><div style="font-size:11px;color:var(--text-3);">rafay@edu.pk</div></div></div></td><td style="font-family:monospace;font-size:12px;">STU-2026-0422</td><td>Mathematics</td><td>Year 1</td><td><strong style="color:var(--amber)">2.5</strong></td><td><span style="color:var(--amber);font-weight:600;">76%</span></td><td><span style="color:var(--amber);font-weight:600;">7/12</span></td><td style="font-size:12px;color:var(--text-2);">+92 311 9012345</td><td><span class="badge badge-amber">Warning</span></td><td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm btn-view" data-id="STU-2026-0422" data-name="Rafay Iqbal">View</button><button class="btn btn-primary btn-sm btn-edit" data-name="Rafay Iqbal">Edit</button></div></td></tr>
+              <tr data-status="active"><td style="color:var(--text-3);font-size:12px;">10</td><td><div class="td-user"><div class="td-init" style="background:#6D28D9;">MF</div><div><div style="font-weight:600;">Maryam Farooq</div><div style="font-size:11px;color:var(--text-3);">maryam@edu.pk</div></div></div></td><td style="font-family:monospace;font-size:12px;">STU-2026-0077</td><td>Business Studies</td><td>Year 3</td><td><strong style="color:var(--green)">3.8</strong></td><td><span style="color:var(--green);font-weight:600;">97%</span></td><td><span style="color:var(--green);font-weight:600;">19/20</span></td><td style="font-size:12px;color:var(--text-2);">+92 345 0123456</td><td><span class="badge badge-green">Active</span></td><td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm btn-view" data-id="STU-2026-0077" data-name="Maryam Farooq">View</button><button class="btn btn-primary btn-sm btn-edit" data-name="Maryam Farooq">Edit</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <h3>No students found</h3>
+          <p>Try a different search term or clear the filters.</p>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <span class="pagination-info" id="paginationInfo">Showing 1–10 of 10 students</span>
+        <div class="pagination-btns" id="paginationBtns">
+          <button class="page-btn" id="prevBtn" onclick="changePage(-1)" disabled>&#8592;</button>
+          <button class="page-btn active" data-page="1" onclick="goToPage(1)">1</button>
+          <button class="page-btn" data-page="2" onclick="goToPage(2)">2</button>
+          <button class="page-btn" data-page="3" onclick="goToPage(3)">3</button>
+          <span style="font-size:12px;color:var(--text-3);padding:0 4px;">…</span>
+          <button class="page-btn" data-page="129" onclick="goToPage(129)">129</button>
+          <button class="page-btn" id="nextBtn" onclick="changePage(1)">&#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer><div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>EduTrack Analytics Portal</h3><p>A professional platform for tracking student performance.</p></div>
+      <div class="footer-col"><h4>Pages</h4><ul><li><a href="index.html">Home</a></li><li><a href="analytics.html">Analytics</a></li><li><a href="report.html">Report</a></li><li><a href="students.html">Students</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 EduTrack Analytics Portal</span><span>Version 7.0.0</span></div>
+  </div></footer>
+</div>
+
+<nav class="bottom-nav">
+  <a class="bottom-nav-item" href="index.html"><span class="bottom-nav-icon">&#8962;</span>Home</a>
+  <a class="bottom-nav-item" href="dashboard.html"><span class="bottom-nav-icon">&#9636;</span>Dashboard</a>
+  <a class="bottom-nav-item" href="analytics.html"><span class="bottom-nav-icon">&#9632;</span>Analytics</a>
+  <a class="bottom-nav-item active" href="students.html"><span class="bottom-nav-icon">&#9632;</span>Students</a>
+  <a class="bottom-nav-item" href="report.html"><span class="bottom-nav-icon">&#9632;</span>Report</a>
+</nav>
+
+<div id="toast-wrap"></div>
+<script>if (!sessionStorage.getItem('loggedIn')) { window.location.href = 'login.html'; }</script>
+<script src="js/nav.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/role.js"></script>
+<script>
+'use strict';
+
+window.addEventListener('load', function() {
+  var btn = document.getElementById('themeToggle');
+  if (btn) {
+    var t = localStorage.getItem('edutrack_theme') || 'light';
+    btn.textContent = t === 'dark' ? '☀️' : '🌙';
+    btn.onclick = toggleTheme;
+  }
+});
+
+/* ══════════════════════════
+   SEARCH + FILTER
+   ══════════════════════════ */
+var activeFilter = 'all';
+var searchQuery  = '';
+var currentPage  = 1;
+var rowsPerPage  = 10;
+
+function getAllRows() {
+  return Array.from(document.querySelectorAll('#stuTbody tr'));
+}
+
+function applyFilters() {
+  var rows       = getAllRows();
+  var emptyState = document.getElementById('emptyState');
+  var filterCount= document.getElementById('filterCount');
+  var subtitle   = document.getElementById('tableSubtitle');
+  var visible    = [];
+
+  rows.forEach(function(row) {
+    var text   = row.textContent.toLowerCase();
+    var status = row.getAttribute('data-status') || '';
+    var matchQ = !searchQuery || text.includes(searchQuery);
+    var matchF = activeFilter === 'all' || status === activeFilter;
+
+    if (matchQ && matchF) {
+      row.style.display = '';
+      if (searchQuery) row.classList.add('row-match');
+      else row.classList.remove('row-match');
+      visible.push(row);
+    } else {
+      row.style.display = 'none';
+      row.classList.remove('row-match');
+    }
+  });
+
+  if (emptyState) emptyState.style.display = visible.length === 0 ? 'block' : 'none';
+  var msg = visible.length + ' student' + (visible.length !== 1 ? 's' : '') + ' found';
+  if (filterCount) filterCount.textContent = msg;
+  if (subtitle) subtitle.textContent = 'Showing ' + visible.length + ' students';
+
+  updatePagination(visible.length);
+}
+
+/* Search input */
+var si = document.getElementById('searchInput');
+if (si) {
+  si.addEventListener('input', function() {
+    searchQuery = this.value.toLowerCase().trim();
+    applyFilters();
+  });
+}
+
+/* Chip filters */
+document.querySelectorAll('.chip[data-filter]').forEach(function(chip) {
+  chip.addEventListener('click', function() {
+    document.querySelectorAll('.chip[data-filter]').forEach(function(c) { c.classList.remove('active'); });
+    this.classList.add('active');
+    activeFilter = this.dataset.filter;
+    applyFilters();
+  });
+});
+
+/* ── Toggle advanced panel ── */
+document.getElementById('toggleFilter').addEventListener('click', function() {
+  var panel = document.getElementById('advSearchPanel');
+  panel.classList.toggle('open');
+  this.textContent = panel.classList.contains('open') ? 'Hide Filters ▴' : 'Advanced Filters ▾';
+});
+
+/* ── Apply advanced filters ── */
+document.getElementById('advSearchApply').addEventListener('click', function() {
+  var dept    = (document.getElementById('advDept').value || '').toLowerCase();
+  var year    = (document.getElementById('advYear').value || '').toLowerCase();
+  var gpaMin  = parseFloat(document.getElementById('advGpaMin').value) || 0;
+  var gpaMax  = parseFloat(document.getElementById('advGpaMax').value) || 4.0;
+  var attendMin = parseFloat(document.getElementById('advAttend').value) || 0;
+
+  var rows = getAllRows();
+  var visible = 0;
+
+  rows.forEach(function(row) {
+    var text    = row.textContent.toLowerCase();
+    var gpaEl   = row.querySelector('td:nth-child(6) strong');
+    var attendEl= row.querySelector('td:nth-child(7) span');
+    var gpa     = gpaEl ? parseFloat(gpaEl.textContent) : 0;
+    var attend  = attendEl ? parseFloat(attendEl.textContent) : 0;
+
+    var ok = true;
+    if (dept && !text.includes(dept)) ok = false;
+    if (year && !text.includes(year)) ok = false;
+    if (gpa < gpaMin || gpa > gpaMax) ok = false;
+    if (attend < attendMin) ok = false;
+
+    row.style.display = ok ? '' : 'none';
+    if (ok) visible++;
+  });
+
+  var subtitle = document.getElementById('tableSubtitle');
+  if (subtitle) subtitle.textContent = 'Showing ' + visible + ' students';
+  var filterCount = document.getElementById('filterCount');
+  if (filterCount) filterCount.textContent = visible + ' students found';
+
+  updatePagination(visible);
+  renderActiveTags(dept, year, gpaMin, gpaMax, attendMin);
+  showToast(visible + ' students match your filters.', 'info');
+});
+
+/* ── Render active filter tags ── */
+function renderActiveTags(dept, year, gpaMin, gpaMax, attendMin) {
+  var wrap = document.getElementById('activeTags');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  function addTag(label) {
+    var tag = document.createElement('span');
+    tag.className = 'filter-tag';
+    tag.innerHTML = label + ' <span class="filter-tag-close" onclick="clearTag(this)">×</span>';
+    wrap.appendChild(tag);
+  }
+  if (dept)       addTag('Dept: ' + dept);
+  if (year)       addTag('Year: ' + year);
+  if (gpaMin > 0) addTag('GPA ≥ ' + gpaMin);
+  if (gpaMax < 4) addTag('GPA ≤ ' + gpaMax);
+  if (attendMin)  addTag('Attend ≥ ' + attendMin + '%');
+}
+
+function clearTag(el) {
+  el.parentElement.remove();
+  resetAdvFilters();
+}
+
+/* ── Reset filters ── */
+function resetAdvFilters() {
+  ['advDept','advYear','advGpaMin','advGpaMax','advAttend'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('activeTags').innerHTML = '';
+  applyFilters();
+}
+
+document.getElementById('advSearchReset').addEventListener('click', function() {
+  resetAdvFilters();
+  showToast('Filters cleared.', 'info');
+});
+
+document.getElementById('resetAllFilters').addEventListener('click', function() {
+  searchQuery = ''; activeFilter = 'all';
+  var si = document.getElementById('searchInput');
+  if (si) si.value = '';
+  document.querySelectorAll('.chip[data-filter]').forEach(function(c) { c.classList.remove('active'); });
+  document.querySelector('.chip[data-filter="all"]').classList.add('active');
+  resetAdvFilters();
+  showToast('All filters cleared.', 'info');
+});
+
+window.clearTag = clearTag;
+
+/* ══════════════════════════
+   PAGINATION
+   ══════════════════════════ */
+function updatePagination(total) {
+  var info = document.getElementById('paginationInfo');
+  var totalPages = Math.ceil(total / rowsPerPage);
+  var start = Math.min((currentPage - 1) * rowsPerPage + 1, total);
+  var end   = Math.min(currentPage * rowsPerPage, total);
+  if (info) info.textContent = 'Showing ' + start + '–' + end + ' of ' + total + ' students';
+
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  if (prevBtn) prevBtn.disabled = currentPage <= 1;
+  if (nextBtn) nextBtn.disabled = currentPage >= totalPages || total === 0;
+
+  document.querySelectorAll('.page-btn[data-page]').forEach(function(btn) {
+    btn.classList.toggle('active', parseInt(btn.dataset.page) === currentPage);
+  });
+}
+
+function goToPage(page) {
+  currentPage = page;
+  updatePagination(getAllRows().filter(function(r) { return r.style.display !== 'none'; }).length);
+  showToast('Page ' + page + ' selected.', 'info');
+}
+
+function changePage(dir) {
+  currentPage += dir;
+  if (currentPage < 1) currentPage = 1;
+  var total = getAllRows().filter(function(r) { return r.style.display !== 'none'; }).length;
+  var totalPages = Math.ceil(total / rowsPerPage);
+  if (currentPage > totalPages) currentPage = totalPages;
+  updatePagination(total);
+  showToast('Page ' + currentPage + '.', 'info');
+}
+
+window.goToPage   = goToPage;
+window.changePage = changePage;
+
+/* ══════════════════════════
+   SORTING
+   ══════════════════════════ */
+var sortCol = -1;
+var sortDir = 1;
+
+document.querySelectorAll('th.sortable').forEach(function(th) {
+  th.addEventListener('click', function() {
+    var idx = parseInt(this.dataset.col);
+    if (sortCol === idx) sortDir *= -1;
+    else { sortCol = idx; sortDir = 1; }
+
+    document.querySelectorAll('th.sortable').forEach(function(t) { t.classList.remove('sort-asc','sort-desc'); });
+    this.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+
+    var tbody = document.getElementById('stuTbody');
+    var rows  = Array.from(tbody.rows);
+    rows.sort(function(a, b) {
+      var at = a.cells[idx] ? a.cells[idx].textContent.trim().toLowerCase() : '';
+      var bt = b.cells[idx] ? b.cells[idx].textContent.trim().toLowerCase() : '';
+      var an = parseFloat(at), bn = parseFloat(bt);
+      if (!isNaN(an) && !isNaN(bn)) return (an - bn) * sortDir;
+      return at.localeCompare(bt) * sortDir;
+    });
+    rows.forEach(function(r) { tbody.appendChild(r); });
+    showToast('Sorted.', 'info');
+  });
+});
+
+/* ══════════════════════════
+   FORM VALIDATION — IMPROVED
+   ══════════════════════════ */
+function setFieldState(id, state, msg) {
+  var el   = document.getElementById(id);
+  var err  = document.getElementById(id + 'Err');
+  var icon = document.getElementById(id + 'Icon');
+  if (!el) return;
+  el.classList.remove('valid','invalid');
+  if (state === 'valid') {
+    el.classList.add('valid');
+    if (icon) icon.textContent = '✅';
+    if (err)  err.classList.remove('show');
+  } else if (state === 'invalid') {
+    el.classList.add('invalid');
+    if (icon) icon.textContent = '❌';
+    if (err)  { err.textContent = msg; err.classList.add('show'); }
+  } else {
+    if (icon) icon.textContent = '';
+    if (err)  err.classList.remove('show');
+  }
+}
+
+function validateField(id) {
+  var el = document.getElementById(id);
+  if (!el) return true;
+  var val = el.value.trim();
+
+  if (id === 'email') {
+    if (!val) { setFieldState(id, 'invalid', 'Email address is required.'); return false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { setFieldState(id, 'invalid', 'Please enter a valid email address.'); return false; }
+    setFieldState(id, 'valid'); return true;
+  }
+  if (id === 'stuId') {
+    if (!val) { setFieldState(id, 'invalid', 'Student ID is required.'); return false; }
+    if (!/^STU-\d{4}-\d{4}$/.test(val)) { setFieldState(id, 'invalid', 'Format must be STU-YYYY-XXXX (e.g. STU-2026-0001).'); return false; }
+    setFieldState(id, 'valid'); return true;
+  }
+  if (!val) {
+    var labels = { fName:'First name', lName:'Last name', dept:'Department', year:'Academic year' };
+    setFieldState(id, 'invalid', (labels[id] || 'This field') + ' is required.');
+    return false;
+  }
+  setFieldState(id, 'valid');
+  return true;
+}
+
+/* Live validation on blur */
+['fName','lName','email','stuId','dept','year'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('blur', function() { validateField(id); });
+    el.addEventListener('input', function() {
+      if (this.classList.contains('invalid')) validateField(id);
+    });
+  }
+});
+
+var regForm = document.getElementById('regForm');
+if (regForm) {
+  regForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var fields = ['fName','lName','email','stuId','dept','year'];
+    var valid  = fields.every(function(id) { return validateField(id); });
+
+    if (valid) {
+      var student = {
+        name:  document.getElementById('fName').value + ' ' + document.getElementById('lName').value,
+        email: document.getElementById('email').value,
+        id:    document.getElementById('stuId').value,
+        dept:  document.getElementById('dept').value,
+        year:  document.getElementById('year').value,
+        createdAt: new Date().toISOString()
+      };
+      var students = JSON.parse(localStorage.getItem('edutrack_students') || '[]');
+      students.push(student);
+      localStorage.setItem('edutrack_students', JSON.stringify(students));
+      showToast('Student registered and saved successfully!', 'success');
+      resetRegForm();
+    } else {
+      showToast('Please fix the errors highlighted in red.', 'error');
+    }
+  });
+}
+
+function resetRegForm() {
+  document.getElementById('regForm').reset();
+  ['fName','lName','email','stuId','dept','year'].forEach(function(id) { setFieldState(id, 'none'); });
+}
+window.resetRegForm = resetRegForm;
+
+/* Toggle reg form */
+document.getElementById('toggleRegForm').addEventListener('click', function() {
+  var wrap = document.getElementById('regFormWrap');
+  var hidden = wrap.style.display === 'none';
+  wrap.style.display = hidden ? '' : 'none';
+  this.textContent   = hidden ? 'Hide Form ▲' : 'Show Form ▼';
+});
+
+/* ── View Profile ── */
+document.querySelectorAll('.btn-view').forEach(function(b) {
+  b.addEventListener('click', function() {
+    localStorage.setItem('edutrack_view_student', this.dataset.id);
+    window.location.href = 'profile.html?id=' + this.dataset.id;
+  });
+});
+
+document.querySelectorAll('.btn-edit').forEach(function(b) {
+  b.addEventListener('click', function() {
+    showToast('Edit mode for ' + this.dataset.name + ' coming soon.', 'info');
+  });
+});
+
+/* ── Export ── */
+function exportCSV() {
+  var csv = 'Student ID,Name,Department,Year,GPA,Attendance,Assignments,Status\n';
+  getAllRows().forEach(function(row) {
+    if (row.style.display === 'none') return;
+    var cells = row.querySelectorAll('td');
+    csv += [
+      cells[2] ? cells[2].textContent.trim() : '',
+      cells[1] ? cells[1].textContent.trim().split('\n')[0] : '',
+      cells[3] ? cells[3].textContent.trim() : '',
+      cells[4] ? cells[4].textContent.trim() : '',
+      cells[5] ? cells[5].textContent.trim() : '',
+      cells[6] ? cells[6].textContent.trim() : '',
+      cells[7] ? cells[7].textContent.trim() : '',
+      cells[9] ? cells[9].textContent.trim() : '',
+    ].join(',') + '\n';
+  });
+  var blob = new Blob([csv], { type: 'text/csv' });
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href = url; a.download = 'EduTrack_Students.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV downloaded.', 'success');
+}
+
+function exportPDF() {
+  showToast('PDF export — opening print dialog…', 'info');
+  setTimeout(function() { window.print(); }, 500);
+}
+
+window.exportCSV = exportCSV;
+window.exportPDF = exportPDF;
+
+// Init
+applyFilters();
+updatePagination(10);
+</script>
+<script>
+// Hide loader — works whether DOM is ready or not
+(function hideLoader() {
+  function doHide() {
+    var loader = document.getElementById('pageLoader');
+    if (loader) {
+      loader.style.opacity = '0';
+      loader.style.transition = 'opacity .25s';
+      setTimeout(function() { loader.style.display = 'none'; }, 280);
+    }
+  }
+  // Try immediately
+  if (document.readyState === 'complete') {
+    doHide();
+  } else {
+    // Fallback — hide after max 1.5 seconds no matter what
+    window.addEventListener('load', doHide);
+    setTimeout(doHide, 1500);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack — Register</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>body { display:block; background:#F9FAFB; }</style>
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-box">
+
+    <div class="auth-brand"><div class="auth-brand-dot"></div>EduTrack</div>
+    <h2 class="auth-title">Create Account</h2>
+    <p class="auth-sub">Register to access the Student Analytics Portal</p>
+
+    <div class="auth-error" id="regError">Please fix the errors below.</div>
+    <div class="auth-success" id="regSuccess">Account created! Redirecting to login…</div>
+
+    <form id="registerForm" novalidate>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="rFName">First Name *</label>
+          <input class="form-control" id="rFName" type="text" placeholder="First name" />
+          <span class="form-err" id="rFNameErr">First name is required.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="rLName">Last Name *</label>
+          <input class="form-control" id="rLName" type="text" placeholder="Last name" />
+          <span class="form-err" id="rLNameErr">Last name is required.</span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:14px;">
+        <label class="form-label" for="rEmail">Email Address *</label>
+        <input class="form-control" id="rEmail" type="email" placeholder="you@edutrack.edu.pk" />
+        <span class="form-err" id="rEmailErr">Enter a valid email.</span>
+      </div>
+
+      <div class="form-group" style="margin-top:14px;">
+        <label class="form-label" for="rRole">Role *</label>
+        <select class="form-control" id="rRole">
+          <option value="">— Select your role —</option>
+          <option>Student</option>
+          <option>Teacher</option>
+          <option>Coordinator</option>
+          <option>Administrator</option>
+        </select>
+        <span class="form-err" id="rRoleErr">Please select a role.</span>
+      </div>
+
+      <div class="form-group" style="margin-top:14px;">
+        <label class="form-label" for="rPass">Password *</label>
+        <div class="password-wrap">
+          <input class="form-control" id="rPass" type="password" placeholder="Min. 8 characters" />
+          <button type="button" class="toggle-pass" id="toggleRPass">&#128065;</button>
+        </div>
+        <div class="pwd-strength">
+          <div class="pwd-bar" id="bar1"></div>
+          <div class="pwd-bar" id="bar2"></div>
+          <div class="pwd-bar" id="bar3"></div>
+        </div>
+        <div class="pwd-label" id="pwdLabel">Enter a password</div>
+        <span class="form-err" id="rPassErr">Password must be at least 8 characters.</span>
+      </div>
+
+      <div class="form-group" style="margin-top:14px;">
+        <label class="form-label" for="rConfirm">Confirm Password *</label>
+        <div class="password-wrap">
+          <input class="form-control" id="rConfirm" type="password" placeholder="Repeat password" />
+          <button type="button" class="toggle-pass" id="toggleRConfirm">&#128065;</button>
+        </div>
+        <span class="form-err" id="rConfirmErr">Passwords do not match.</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:14px;font-size:12px;color:var(--text-2);">
+        <input type="checkbox" id="rTerms" style="width:15px;height:15px;" />
+        <label for="rTerms">I agree to the <a href="#" style="color:var(--blue);font-weight:600;">Terms of Use</a> and <a href="#" style="color:var(--blue);font-weight:600;">Privacy Policy</a></label>
+      </div>
+      <span class="form-err" id="rTermsErr" style="display:none;">You must agree to the terms.</span>
+
+      <div class="auth-divider"></div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;padding:10px;font-size:14px;">Create Account</button>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <a href="login.html">Sign in</a>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast-wrap"></div>
+<script>
+'use strict';
+
+function showToast(msg, type='info') {
+  const icons = {success:'✓',error:'✕',info:'i'};
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<strong>${icons[type]}</strong> ${msg}`;
+  document.getElementById('toast-wrap').appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// Toggle password visibility
+function togglePass(btnId, inputId) {
+  document.getElementById(btnId).addEventListener('click', function() {
+    const inp = document.getElementById(inputId);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    this.innerHTML = inp.type === 'password' ? '&#128065;' : '&#128064;';
+  });
+}
+togglePass('toggleRPass', 'rPass');
+togglePass('toggleRConfirm', 'rConfirm');
+
+// Password strength checker
+document.getElementById('rPass').addEventListener('input', function() {
+  const val = this.value;
+  const bar1 = document.getElementById('bar1');
+  const bar2 = document.getElementById('bar2');
+  const bar3 = document.getElementById('bar3');
+  const label= document.getElementById('pwdLabel');
+
+  bar1.className = bar2.className = bar3.className = 'pwd-bar';
+
+  if (val.length === 0) {
+    label.textContent = 'Enter a password';
+  } else if (val.length < 6) {
+    bar1.classList.add('weak');
+    label.textContent = 'Weak — too short';
+    label.style.color = 'var(--red)';
+  } else if (val.length < 10 || !/[0-9]/.test(val)) {
+    bar1.classList.add('medium'); bar2.classList.add('medium');
+    label.textContent = 'Medium — add numbers or symbols';
+    label.style.color = 'var(--amber)';
+  } else {
+    bar1.classList.add('strong'); bar2.classList.add('strong'); bar3.classList.add('strong');
+    label.textContent = 'Strong password';
+    label.style.color = 'var(--green)';
+  }
+});
+
+// Form submit
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  let valid = true;
+
+  document.getElementById('regError').classList.remove('show');
+  document.getElementById('regSuccess').classList.remove('show');
+
+  // Validate fields
+  const fields = [
+    { id: 'rFName',   errId: 'rFNameErr',   msg: 'First name is required.' },
+    { id: 'rLName',   errId: 'rLNameErr',   msg: 'Last name is required.' },
+    { id: 'rEmail',   errId: 'rEmailErr',   msg: 'Email is required.' },
+    { id: 'rRole',    errId: 'rRoleErr',    msg: 'Please select a role.' },
+    { id: 'rPass',    errId: 'rPassErr',    msg: 'Password must be at least 8 characters.' },
+    { id: 'rConfirm', errId: 'rConfirmErr', msg: 'Passwords do not match.' },
+  ];
+
+  fields.forEach(({ id, errId, msg }) => {
+    const el  = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (!el.value.trim()) {
+      el.classList.add('error'); err.textContent = msg; err.classList.add('show'); valid = false;
+    } else {
+      el.classList.remove('error'); err.classList.remove('show');
+    }
+  });
+
+  // Email format
+  const em = document.getElementById('rEmail');
+  if (em.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value)) {
+    em.classList.add('error');
+    document.getElementById('rEmailErr').textContent = 'Enter a valid email address.';
+    document.getElementById('rEmailErr').classList.add('show');
+    valid = false;
+  }
+
+  // Password length
+  const pass = document.getElementById('rPass');
+  if (pass.value && pass.value.length < 8) {
+    pass.classList.add('error');
+    document.getElementById('rPassErr').classList.add('show');
+    valid = false;
+  }
+
+  // Password match
+  const confirm = document.getElementById('rConfirm');
+  if (confirm.value && confirm.value !== pass.value) {
+    confirm.classList.add('error');
+    document.getElementById('rConfirmErr').classList.add('show');
+    valid = false;
+  }
+
+  // Terms
+  const terms = document.getElementById('rTerms');
+  const termsErr = document.getElementById('rTermsErr');
+  if (!terms.checked) {
+    termsErr.style.display = 'block'; valid = false;
+  } else {
+    termsErr.style.display = 'none';
+  }
+
+  if (!valid) { document.getElementById('regError').classList.add('show'); return; }
+
+  // Save to localStorage
+  const user = {
+    name:  document.getElementById('rFName').value + ' ' + document.getElementById('rLName').value,
+    email: document.getElementById('rEmail').value,
+    role:  document.getElementById('rRole').value,
+    createdAt: new Date().toISOString()
+  };
+  const users = JSON.parse(localStorage.getItem('edutrack_users') || '[]');
+  users.push(user);
+  localStorage.setItem('edutrack_users', JSON.stringify(users));
+
+  document.getElementById('regSuccess').classList.add('show');
+  showToast('Account created successfully!', 'success');
+  setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+});
+
+// Clear errors on input
+document.querySelectorAll('.form-control').forEach(el => {
+  el.addEventListener('input', () => {
+    el.classList.remove('error');
+    const err = document.getElementById(el.id + 'Err');
+    if (err) err.classList.remove('show');
+    document.getElementById('regError').classList.remove('show');
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack — Contact</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+<script>
+// ── DARK MODE — inline for reliability ──
+(function() {
+  var saved = localStorage.getItem('edutrack_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
+
+function toggleTheme() {
+  var html    = document.documentElement;
+  var current = html.getAttribute('data-theme') || 'light';
+  var next    = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('edutrack_theme', next);
+  var btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
+}
+
+window.addEventListener('load', function() {
+  var btn = document.getElementById('themeToggle');
+  if (btn) {
+    var theme = localStorage.getItem('edutrack_theme') || 'light';
+    btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    btn.onclick = toggleTheme;
+  }
+});
+window.toggleTheme = toggleTheme;
+</script>
+</head>
+<body>
+
+<!-- Page Loading Overlay -->
+<div class="loading-overlay" id="pageLoader">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading…</div>
+</div>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand"><div class="brand-dot"></div>EduTrack</div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Menu</div>
+    <a class="nav-link" href="index.html"><span class="nav-link-icon">&#8962;</span> Home<span class="nav-tooltip">Home</span></a>
+    <a class="nav-link" href="dashboard.html"><span class="nav-link-icon">&#9636;</span> Dashboard<span class="nav-tooltip">Dashboard</span></a>
+    <a class="nav-link" href="analytics.html"><span class="nav-link-icon">&#9632;</span> Analytics<span class="nav-tooltip">Analytics</span></a>
+    <a class="nav-link" href="report.html"><span class="nav-link-icon">&#9632;</span> Report<span class="nav-tooltip">Performance Report</span></a>
+    <a class="nav-link" href="students.html"><span class="nav-link-icon">&#9632;</span> Students <span class="nav-badge">10</span><span class="nav-tooltip">Student Records</span></a>
+    <div class="nav-label">Info</div>
+    <a class="nav-link" href="demo.html"><span class="nav-link-icon">&#9632;</span> Demo<span class="nav-tooltip">Final Demo</span></a>
+    <a class="nav-link" href="about.html"><span class="nav-link-icon">&#9632;</span> About<span class="nav-tooltip">About EduTrack</span></a>
+    <a class="nav-link active" href="contact.html"><span class="nav-link-icon">&#9632;</span> Contact<span class="nav-tooltip">Contact Us</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">UT</div>
+      <div><div class="user-info-name">Usman Tariq</div><div class="user-info-role">Portal Coordinator</div></div>
+    </div>
+    <button onclick="sessionStorage.removeItem('loggedIn');window.location.href='login.html'" style="margin-top:10px;width:100%;padding:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:rgba(255,255,255,.7);font-size:12px;font-weight:600;cursor:pointer;">Sign Out</button>
+  </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Notification Panel -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-hdr">
+    <span class="notif-panel-title">Notifications</span>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span class="notif-mark-read" id="markAllRead">Mark all read</span>
+      <button id="closeNotif" style="background:none;border:none;cursor:pointer;color:var(--text-2);font-size:18px;">&times;</button>
+    </div>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+  <div class="notif-panel-footer"><a href="#">View all notifications</a></div>
+</div>
+
+<div class="main-wrap">
+  <div class="topbar">
+    <button class="topbar-hamburger" id="hamburger">&#9776;</button>
+    <span class="topbar-title">Contact</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+      <button class="notif-btn" id="notifBtn" style="position:relative;">🔔<span class="notif-count" id="notifCount">3</span></button>
+    </div>
+  </div>
+  <div class="page-wrap" id="main-content">
+    <div class="breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">›</span><span>Contact</span></div>
+    <div class="page-hdr"><h1>Contact Us</h1><p>We respond to all enquiries within one business day.</p></div>
+    <div class="contact-layout">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="card">
+          <div class="card-hdr"><div class="card-title">Get in Touch</div></div>
+          <div class="card-body">
+            <div class="contact-info-item"><div class="ci-icon">@</div><div class="ci-text"><h4>Email</h4><p>support@edutrack.edu.pk</p></div></div>
+            <div class="contact-info-item"><div class="ci-icon">#</div><div class="ci-text"><h4>Phone</h4><p>+92 (51) 012-3456<br>Mon–Fri, 9 AM – 5 PM PKT</p></div></div>
+            <div class="contact-info-item"><div class="ci-icon">*</div><div class="ci-text"><h4>Office</h4><p>Block 14, Gulshan-e-Iqbal<br>Karachi, Pakistan</p></div></div>
+            <div class="contact-info-item"><div class="ci-icon">~</div><div class="ci-text"><h4>Hours</h4><p>Mon–Fri: 9 AM – 5 PM<br>Saturday: 10 AM – 1 PM</p></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><div class="card-title">Quick Links</div></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <a href="#" style="font-size:13px;color:var(--blue);font-weight:500;">Documentation &amp; User Guide</a>
+              <a href="#" style="font-size:13px;color:var(--blue);font-weight:500;">Frequently Asked Questions</a>
+              <a href="#" style="font-size:13px;color:var(--blue);font-weight:500;">Report a Bug</a>
+              <a href="#" style="font-size:13px;color:var(--blue);font-weight:500;">Submit a Feature Request</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Send a Message</div></div>
+        <div class="card-body">
+          <form id="cForm" novalidate>
+            <div class="form-grid">
+              <div class="form-group"><label class="form-label" for="cName">Full Name *</label><input class="form-control" id="cName" type="text" placeholder="Your name" /><span class="form-err" id="cNameErr">Name is required.</span></div>
+              <div class="form-group"><label class="form-label" for="cEmail">Email *</label><input class="form-control" id="cEmail" type="email" placeholder="you@school.edu.pk" /><span class="form-err" id="cEmailErr">Email is required.</span></div>
+              <div class="form-group full"><label class="form-label" for="cSubject">Subject *</label><select class="form-control" id="cSubject"><option value="">— Select a topic —</option><option>General Enquiry</option><option>Technical Support</option><option>Account &amp; Access</option><option>Student Data Query</option><option>Report an Issue</option><option>Feature Request</option></select><span class="form-err" id="cSubjectErr">Please select a subject.</span></div>
+              <div class="form-group full"><label class="form-label" for="cMsg">Message *</label><textarea class="form-control" id="cMsg" placeholder="Describe your query…" style="min-height:110px;"></textarea><span class="form-err" id="cMsgErr">Message is required.</span></div>
+              <div class="form-group full" style="flex-direction:row;align-items:center;gap:8px;"><input type="checkbox" id="consent" style="width:15px;height:15px;flex-shrink:0;" /><label for="consent" style="font-size:12px;color:var(--text-2);">I agree to my information being stored for support purposes.</label></div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('cForm').reset()">Clear</button>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>EduTrack Analytics Portal</h3><p>A professional platform for tracking student performance.</p></div>
+      <div class="footer-col"><h4>Pages</h4><ul><li><a href="index.html">Home</a></li><li><a href="dashboard.html">Dashboard</a></li><li><a href="report.html">Report</a></li><li><a href="students.html">Students</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 EduTrack Analytics Portal</span><span>Version 7.0.0</span></div>
+  </div></footer>
+</div>
+
+<nav class="bottom-nav">
+  <a class="bottom-nav-item" href="index.html"><span class="bottom-nav-icon">&#8962;</span>Home</a>
+  <a class="bottom-nav-item" href="dashboard.html"><span class="bottom-nav-icon">&#9636;</span>Dashboard</a>
+  <a class="bottom-nav-item" href="report.html"><span class="bottom-nav-icon">&#9632;</span>Report</a>
+  <a class="bottom-nav-item" href="students.html"><span class="bottom-nav-icon">&#9632;</span>Students</a>
+  <a class="bottom-nav-item active" href="contact.html"><span class="bottom-nav-icon">&#9632;</span>Contact</a>
+</nav>
+
+<div id="toast-wrap"></div>
+<script>
+  // Auth guard — redirect to login if not logged in
+  if (!sessionStorage.getItem('loggedIn')) {
+    window.location.href = 'login.html';
+  }
+</script>
+<script src="js/role.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/contact.js"></script>
+<script>
+// Hide loader — works whether DOM is ready or not
+(function hideLoader() {
+  function doHide() {
+    var loader = document.getElementById('pageLoader');
+    if (loader) {
+      loader.style.opacity = '0';
+      loader.style.transition = 'opacity .25s';
+      setTimeout(function() { loader.style.display = 'none'; }, 280);
+    }
+  }
+  // Try immediately
+  if (document.readyState === 'complete') {
+    doHide();
+  } else {
+    // Fallback — hide after max 1.5 seconds no matter what
+    window.addEventListener('load', doHide);
+    setTimeout(doHide, 1500);
+  }
+})();
+</script>
+</body>
+</html>
